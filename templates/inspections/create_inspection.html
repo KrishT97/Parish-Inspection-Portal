@@ -1,0 +1,159 @@
+<!-- inspections/create_inspection.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Inspection</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Create Inspection for Parish: {{ parish.name }}</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="signage">Signage: Is signage present, stable, legible and with no protruding bolts?</label>
+                {{ form.signage }}
+            </div>
+            <div class="form-group">
+                <label for="general_surfaces_debris">General Surfaces: Are they free from debris, erosion, litter, weeds, slippery algae, etc.?</label>
+                {{ form.general_surfaces_debris }}
+            </div>
+            <div class="form-group">
+                <label for="general_surfaces_grids">General Surfaces: Are any ground grids present and secure?</label>
+                {{ form.general_surfaces_grids }}
+            </div>
+            <div class="form-group">
+                <label for="litter_bins_secure">Litter Bins: Are they secure with liners present?</label>
+                {{ form.litter_bins_secure }}
+            </div>
+            <div class="form-group">
+                <label for="litter_bins_empty">Litter Bins: Are they empty or not in need of emptying?</label>
+                {{ form.litter_bins_empty }}
+            </div>
+            <div class="form-group">
+                <label for="seating_stable">Seating – Various: Are the seats secured to the ground, stable, clean, undamaged, and showing no obvious signs of timber decay or corrosion/decay?</label>
+                {{ form.seating_stable }}
+            </div>
+            <div class="form-group">
+                <label for="swing_supports_secure">Swing – Mixed – 2 Bay 4 Seat- Wicksteed: Are the supports and cross bar secure, undamaged, and free from any obvious signs of corrosion?</label>
+                {{ form.swing_supports_secure }}
+            </div>
+            <div class="form-group">
+                <label for="swing_caps_fitted">Swing – Mixed – 2 Bay 4 Seat- Wicksteed: Are all caps fitted?</label>
+                {{ form.swing_caps_fitted }}
+            </div>
+            <div class="form-group">
+                <label for="swing_unit_stable">Swing – Mixed – 2 Bay 4 Seat- Wicksteed: Is the unit stable?</label>
+                {{ form.swing_unit_stable }}
+            </div>
+            <div class="form-group">
+                <label for="swing_seats_secure">Swing – Mixed – 2 Bay 4 Seat- Wicksteed: Are the swing seats free from damage and secure?</label>
+                {{ form.swing_seats_secure }}
+            </div>
+            <div class="form-group">
+                <label for="swing_chains_wear">Swing – Mixed – 2 Bay 4 Seat- Wicksteed: Are the chains and shackles showing no signs of excessive wear and working freely?</label>
+                {{ form.swing_chains_wear }}
+            </div>
+            <div class="form-group">
+                <label for="swing_surfacing_condition">Swing – Mixed – 2 Bay 4 Seat- Wicksteed: Is the surfacing undamaged and in a good condition without erosion/puddling?</label>
+                {{ form.swing_surfacing_condition }}
+            </div>
+            <div class="form-group">
+                <label for="slide_secure">Slide – Embankment: Is the starting section secure, stable and free from damage?</label>
+                {{ form.slide_secure }}
+            </div>
+            <div class="form-group">
+                <label for="slide_clean">Slide – Embankment: Is the slide-chute in a good condition, clean and free from any foreign objects and with no sharp edges?</label>
+                {{ form.slide_clean }}
+            </div>
+            <div class="form-group">
+                <label for="slide_surfacing_condition">Slide – Embankment: Is the surfacing undamaged and in a good condition?</label>
+                {{ form.slide_surfacing_condition }}
+            </div>
+            <div class="form-group">
+                <label for="cableway_supports_secure">(Cableway) Are all the supports, barriers secure and undamaged with no signs of obvious corrosion/decay present?</label>
+                {{ form.cableway_supports_secure }}
+            </div>
+            <div class="form-group">
+                <label for="cableway_unit_stable">(Cableway) Is the unit stable?</label>
+                {{ form.cableway_unit_stable }}
+            </div>
+            <div class="form-group">
+                <label for="cableway_caps_present">(Cableway) Are all component parts present including caps?</label>
+                {{ form.cableway_caps_present }}
+            </div>
+            <div class="form-group">
+                <label for="cableway_suspension_chain">(Cableway) Are the cable, seat, and suspension chain present, secure and free from damage?</label>
+                {{ form.cableway_suspension_chain }}
+            </div>
+            <div class="form-group">
+                <label for="cableway_traveller_smooth">(Cableway) Does the traveller run smoothly with no undue noise?</label>
+                {{ form.cableway_traveller_smooth }}
+            <div class="form-group">
+                <label for="cableway_take_off">(Cableway) Are the take-off and landing areas undamaged?</label>
+                {{ form.cableway_take_off }}
+            </div>
+            <div class="form-group">
+                <label for="cableway_surfacing_condition">(Cableway) Is the surfacing undamaged and free from trips?</label>
+                {{ form.cableway_surfacing_condition }}
+            </div>
+            <div class="form-group">
+                <label for="tunnel_damage_free">(Agility Tunnel Mound -Large) Are the tunnel ends free from damage?</label>
+                {{ form.tunnel_damage_free }}
+            </div>
+            <div class="form-group">
+                <label for="tunnel_clean">(Agility Tunnel Mound -Large) Is the tunnel clean and undamaged?</label>
+                {{ form.tunnel_clean }}
+            </div>
+            <div class="form-group">
+                <label for="tunnel_palisade_stable">(Agility Tunnel Mound -Large) Are the palisade logs, steps, ladder and barriers in a good stable condition with no obvious signs of decay?</label>
+                {{ form.tunnel_palisade_stable }}
+            </div>
+            <div class="form-group">
+                <label for="tunnel_surfacing_condition">(Agility Tunnel Mound -Large) Is the surfacing in good order?</label>
+                {{ form.tunnel_surfacing_condition }}
+            </div>
+            <div class="form-group">
+                <label for="logs_secure">(Natural Play – Logs) Are the logs secure, free from damage and any obvious signs of decay?</label>
+                {{ form.logs_secure }}
+            </div>
+            <div class="form-group">
+                <label for="logs_free_of_decay">(Natural Play – Logs) Is the unit free from slippery algae?</label>
+                {{ form.logs_free_of_decay }}
+            </div>
+            <div class="form-group">
+                <label for="logs_surfacing_condition">(Natural Play – Logs) Is the surfacing undamaged and in a good condition with no erosion and puddling?</label>
+                {{ form.logs_surfacing_condition }}
+            </div>
+            <div class="form-group">
+                <label for="climber_logs_secure">(Climber - Logs) Are all supports stable, secure and free from damage and any obvious signs of decay?</label>
+                {{ form.climber_logs_secure }}
+            </div>
+            <div class="form-group">
+                <label for="climber_components_secure">(Climber - Logs) Are all component parts present and secure including caps and holds?</label>
+                {{ form.climber_components_secure }}
+            </div>
+            <div class="form-group">
+                <label for="climber_unit_stable">(Climber - Logs) Is the unit stable and free from slippery algae?</label>
+                {{ form.climber_unit_stable }}
+            </div>
+            <div class="form-group">
+                <label for="climber_holds_present">(Climber - Logs) Are the climbing holds present, secure and non-rotating?</label>
+                {{ form.climber_holds_present }}
+            </div>
+            <div class="form-group">
+                <label for="climber_surfacing_condition">(Climber - Logs) Is the surfacing undamaged and free from trips?</label>
+                {{ form.climber_surfacing_condition }}
+            </div>
+            <div>
+                <label for="id_comment_text">General Comment:</label>
+                <textarea id="id_comment_text" name="comment_text"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Inspection</button>
+        </form>
+    </div>
+</body>
+</html>
