@@ -11,7 +11,7 @@
 - Pagination on homepage
 #### Things to consider for next update
 - UI can be better for all pages.
-- Signals is incorporated, however questions does not get populated in "Questions" section in admin page yet although the structuring is ok. Have to look into this**
+- Signals is incorporated, however questions does not get populated in "Questions" section in admin page yet due to the current logic. Basically right now questions can be     added for each inspection created but the idea is to pre-load all the questions and have the changes take effect on all new inspections.  Have to look into this**
 - Should also have an option to remove parishes, only admin can delete for now.
 - Be able to modify profile pic in parish detail page anytime.
 - Improve the ID of parishes parish/paris_id , it somehow shows random numbers and could not be considering deleted parishes or inspections to restart the numbering
