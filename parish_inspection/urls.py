@@ -19,18 +19,23 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from inspections import views as inspection_views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', inspection_views.home, name='home'),
-    path('register/', inspection_views.register, name='register'),
+    path('', inspection_views.HomeView.as_view(), name='home'),
+    path('register/', inspection_views.RegisterView.as_view(), name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='inspections/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='inspections/logout.html'), name='logout'),
-    path('parish/create/', inspection_views.create_parish, name='create_parish'),
-    path('parish/<int:parish_id>/', inspection_views.parish_detail, name='parish_detail'),
-    path('parish/<int:parish_id>/inspection/create/', inspection_views.create_inspection, name='create_inspection'),
-    path('parish/<int:parish_id>/inspection/<int:inspection_id>/', inspection_views.inspection_detail, name='inspection_detail'),
-    path('parish/<int:parish_id>/inspection/<int:inspection_id>/edit/', inspection_views.edit_inspection, name='edit_inspection'),
-    path('parish/<int:parish_id>/inspection/<int:inspection_id>/delete/', inspection_views.delete_inspection, name='delete_inspection'),
+    path('parish/create/', inspection_views.ParishCreateView.as_view(), name='create_parish'),
+    path('parish/<int:parish_id>/', inspection_views.ParishDetailView.as_view(), name='parish_detail'),
+    path('parish/<int:parish_id>/inspection/create/', inspection_views.InspectionCreateView.as_view(), name='create_inspection'),
+    path('parish/<int:parish_id>/inspection/<int:inspection_id>/', inspection_views.InspectionDetailView.as_view(), name='inspection_detail'),
+    path('parish/<int:parish_id>/inspection/<int:inspection_id>/edit/', inspection_views.InspectionEditView.as_view(), name='edit_inspection'),
+    path('parish/<int:parish_id>/inspection/<int:inspection_id>/delete/', inspection_views.InspectionDeleteView.as_view(), name='delete_inspection'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 

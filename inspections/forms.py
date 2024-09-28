@@ -5,7 +5,9 @@ from .models import Parish, Inspection, GeneralComment
 class ParishForm(forms.ModelForm):
     class Meta:
         model = Parish
-        fields = ['name', 'description']
+        fields = ['image', 'name', 'description']
+
+    image = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
 
 class InspectionForm(forms.ModelForm):
@@ -29,15 +31,15 @@ class InspectionForm(forms.ModelForm):
             'swing_supports_secure', 'swing_caps_fitted', 'swing_unit_stable',
             'swing_seats_secure', 'swing_chains_wear', 'swing_surfacing_condition',
             'slide_secure', 'slide_clean', 'slide_surfacing_condition',
-            'cableway_supports_secure', 'cableway_unit_stable', 'cableway_caps_present',
-            'cableway_traveller_smooth', 'cableway_surfacing_condition',
+            'cableway_supports_secure', 'cableway_unit_stable', 'cableway_caps_present', 'cableway_suspension_chain',
+            'cableway_traveller_smooth', 'cableway_take_off', 'cableway_surfacing_condition',
             'tunnel_damage_free', 'tunnel_clean', 'tunnel_palisade_stable',
             'tunnel_surfacing_condition', 'logs_secure', 'logs_free_of_decay',
             'logs_surfacing_condition', 'climber_logs_secure', 'climber_components_secure',
             'climber_unit_stable', 'climber_holds_present', 'climber_surfacing_condition'
         ]
         widgets = {
-            field_name: forms.Select(choices=[('yes', 'Yes'),('no', 'No'),('dont_know', "Don't Know")])
+            field_name: forms.Select(choices=[('yes', 'Yes'), ('no', 'No'), ('dont_know', "Don't Know")])
             for field_name in fields
         }
 
@@ -50,4 +52,3 @@ class InspectionForm(forms.ModelForm):
             kwargs['initial'] = kwargs.get('initial', {})
             kwargs['initial']['comment_text'] = general_comment.comment_text if general_comment else ""
         super().__init__(*args, **kwargs)
-

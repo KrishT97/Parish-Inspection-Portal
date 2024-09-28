@@ -1,147 +1,166 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Parish, Inspection, Question, GeneralComment
-from django.contrib.auth.decorators import login_required
-from .forms import ParishForm, InspectionForm
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.core.paginator import Paginator
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseForbidden
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
+from .models import Parish, Inspection, Question, GeneralComment
+from .forms import ParishForm, InspectionForm
 from django.utils import timezone
 
 
-def home(request):
-    parishes_list = Parish.objects.all()
-    paginator = Paginator(parishes_list, 10)  # Show 10 parishes per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'inspections/home.html',
-                  {'parishes': page_obj, 'page_obj': page_obj, 'is_paginated': page_obj.has_other_pages()})
+class HomeView(ListView):
+    model = Parish
+    template_name = 'inspections/home.html'
+    context_object_name = 'parishes'
+    paginate_by = 10
+
+    def get_queryset(self):
+        return Parish.objects.all().order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_paginated'] = self.paginate_by < self.get_queryset().count()
+        return context
 
 
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'inspections/register.html', {'form': form})
+class RegisterView(CreateView):
+    form_class = UserCreationForm
+    template_name = 'inspections/register.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)  # Log in the user after successful registration
+        return redirect(self.success_url)
 
 
-@login_required
-def create_parish(request):
-    if request.method == "POST":
-        form = ParishForm(request.POST)
-        if form.is_valid():
-            parish = form.save(commit=False)
-            parish.created_by = request.user
-            parish.save()
-            return redirect('home')
-    else:
-        form = ParishForm()
-    return render(request, 'inspections/create_parish.html', {'form': form})
+class ParishCreateView(LoginRequiredMixin, CreateView):
+    model = Parish
+    form_class = ParishForm
+    template_name = 'inspections/create_parish.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        parish = form.save(commit=False)
+        parish.created_by = self.request.user  # Set the created_by field
+        parish.save()
+        return redirect(self.success_url)
 
 
-def parish_detail(request, parish_id):
-    parish = get_object_or_404(Parish, id=parish_id)
+class ParishDetailView(DetailView):
+    model = Parish
+    template_name = 'inspections/parish_detail.html'
+    context_object_name = 'parish'
+    pk_url_kwarg = 'parish_id'
 
-    # Retrieve inspections sorted by the updated_at field in descending order
-    inspections = parish.inspections.all().order_by('-updated_at')
-
-    # Check if the user is the creator of the parish
-    is_creator = request.user.is_authenticated and parish.created_by == request.user
-
-    context = {
-        'parish': parish,
-        'inspections': inspections,
-        'is_creator': is_creator,
-    }
-    return render(request, 'inspections/parish_detail.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['inspections'] = self.object.inspections.all().order_by('-updated_at')
+        context['is_creator'] = self.request.user == self.object.created_by
+        context['num_inspections'] = self.object.inspections.count()
+        return context
 
 
-@login_required
-def create_inspection(request, parish_id):
-    parish = get_object_or_404(Parish, id=parish_id)
-    if request.method == "POST":
-        form = InspectionForm(request.POST)
-        if form.is_valid():
-            inspection = form.save(commit=False)
-            inspection.parish = parish
-            inspection.created_by = request.user
-            inspection.save()
-            comment_text = form.cleaned_data.get('comment_text', '')
-            if comment_text:
-                GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
+class InspectionCreateView(LoginRequiredMixin, CreateView):
+    model = Inspection
+    form_class = InspectionForm
+    template_name = 'inspections/create_inspection.html'
 
-            return redirect('parish_detail', parish_id=parish.id)
-    else:
-        form = InspectionForm()
-    return render(request, 'inspections/create_inspection.html', {'form': form, 'parish': parish})
+    def form_valid(self, form):
+        parish = Parish.objects.get(id=self.kwargs['parish_id'])
+        inspection = form.save(commit=False)
+        inspection.parish = parish
+        inspection.created_by = self.request.user
+        inspection.save()
 
+        comment_text = form.cleaned_data.get('comment_text', '')
+        if comment_text:
+            GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
 
-def inspection_detail(request, parish_id, inspection_id):
-    inspection = get_object_or_404(Inspection, id=inspection_id, parish_id=parish_id)
-    questions = Question.objects.filter(inspection=inspection)
-    comment = GeneralComment.objects.filter(inspection=inspection).first()  # Get the first comment or None
+        return redirect('parish_detail', parish_id=parish.id)
 
-    context = {
-        'inspection': inspection,
-        'questions': questions,
-        'comment': comment,
-    }
-    return render(request, 'inspections/inspection_detail.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['parish'] = Parish.objects.get(id=self.kwargs['parish_id'])
+        return context
 
 
-def edit_inspection(request, parish_id, inspection_id):
-    parish = get_object_or_404(Parish, id=parish_id)
-    inspection = get_object_or_404(Inspection, id=inspection_id, parish=parish)
+class InspectionDetailView(DetailView):
+    model = Inspection
+    template_name = 'inspections/inspection_detail.html'
+    pk_url_kwarg = 'inspection_id'
 
-    # Only allow the parish owner to edit their own parish's inspections
-    if parish.created_by != request.user:
-        return HttpResponseForbidden("You are not allowed to edit this inspection.")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['questions'] = Question.objects.filter(inspection=self.object)
+        context['comment'] = GeneralComment.objects.filter(inspection=self.object).first()
+        return context
 
-    if request.method == 'POST':
-        form = InspectionForm(request.POST, instance=inspection)
-        if form.is_valid():
-            # Update the updated_at field to the current time
-            inspection.updated_at = timezone.now()
 
-            # Save the inspection and update its timestamp
-            form.save()
+class InspectionEditView(LoginRequiredMixin, UpdateView):
+    model = Inspection
+    form_class = InspectionForm
+    template_name = 'inspections/edit_inspection.html'
+    pk_url_kwarg = 'inspection_id'
 
-            # Handle general comment separately
-            comment_text = form.cleaned_data.get('comment_text', '').strip()
+    def get_object(self, queryset=None):
+        parish = get_object_or_404(Parish, id=self.kwargs['parish_id'])
+        inspection = get_object_or_404(Inspection, id=self.kwargs['inspection_id'], parish=parish)
+        if parish.created_by != self.request.user:
+            return HttpResponseForbidden("You are not allowed to edit this inspection.")
+        return inspection
 
-            # Check if a GeneralComment exists for this inspection
-            general_comment = GeneralComment.objects.filter(inspection=inspection).first()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['parish'] = Parish.objects.get(id=self.kwargs['parish_id'])
 
-            if comment_text:  # If there is a comment text provided
-                if general_comment:  # Update existing comment
-                    general_comment.comment_text = comment_text
-                    general_comment.save()
-                else:  # Create a new GeneralComment
-                    GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
+        # Load default questions for inspections (this ensures the same questions are available for editing)
+        context['questions'] = Question.objects.all()
+        return context
+
+    def form_valid(self, form):
+        inspection = form.save(commit=False)
+        inspection.updated_at = timezone.now()
+        inspection.save()
+
+        # Handle general comment
+        comment_text = form.cleaned_data.get('comment_text', '').strip()
+        general_comment = GeneralComment.objects.filter(inspection=inspection).first()
+
+        if comment_text:
+            if general_comment:
+                general_comment.comment_text = comment_text
+                general_comment.save()
             else:
-                # If no comment_text and a comment exists, delete it
-                if general_comment:
-                    general_comment.delete()
+                GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
+        elif general_comment:
+            general_comment.delete()
 
-            return redirect('parish_detail', parish_id=parish.id)
-    else:
-        form = InspectionForm(instance=inspection)
-
-    return render(request, 'inspections/edit_inspection.html', {'form': form, 'parish': parish, 'inspection': inspection})
+        return redirect('parish_detail', parish_id=inspection.parish.id)
 
 
-def delete_inspection(request, parish_id, inspection_id):
-    parish = get_object_or_404(Parish, id=parish_id)
-    inspection = get_object_or_404(Inspection, id=inspection_id, parish=parish)
+class InspectionDeleteView(DeleteView):
+    model = Inspection
+    template_name = 'inspections/delete_inspection.html'
+    pk_url_kwarg = 'inspection_id'
 
-    # Check if the user is the creator of the parish
-    if parish.created_by != request.user:
-        return HttpResponseForbidden("You are not allowed to delete inspections from this parish.")
+    def get_object(self, queryset=None):
+        parish = get_object_or_404(Parish, id=self.kwargs['parish_id'])
+        inspection = get_object_or_404(Inspection, id=self.kwargs['inspection_id'], parish=parish)
 
-    inspection.delete()
-    return redirect('parish_detail', parish_id=parish.id)
+        # Check if the user is the creator of the parish
+        if parish.created_by != self.request.user:
+            raise HttpResponseForbidden("You are not allowed to delete inspections from this parish.")
+
+        return inspection
+
+    def get_success_url(self):
+        parish_id = self.kwargs['parish_id']
+        return reverse_lazy('parish_detail', kwargs={'parish_id': parish_id})
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return redirect(self.get_success_url())
