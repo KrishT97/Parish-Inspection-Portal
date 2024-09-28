@@ -45,5 +45,5 @@ def create_default_questions(sender, instance, created, **kwargs):
             Question.objects.create(
                 inspection=instance,
                 question_text=question_text,
-                response="dont_know"
+                response="other"
             )
