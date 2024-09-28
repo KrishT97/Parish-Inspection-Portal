@@ -16,3 +16,6 @@
 - Be able to modify profile pic in parish detail page anytime.
 - Improve the ID of parishes parish/paris_id , it somehow shows random numbers and could not be considering deleted parishes or inspections to restart the numbering
 - A return to button in parish and inspection page, to go back to previous page.
+### Example UI
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/home.jpg" width="800"/>
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/fancyparish.jpg" width="800"/>
