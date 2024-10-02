@@ -29,6 +29,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='inspections/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='inspections/logout.html'), name='logout'),
     path('parish/create/', inspection_views.ParishCreateView.as_view(), name='create_parish'),
+    path('parish/<int:parish_id>/delete/', inspection_views.ParishDeleteView.as_view(), name='delete_parish'),
     path('parish/<int:parish_id>/', inspection_views.ParishDetailView.as_view(), name='parish_detail'),
     path('parish/<int:parish_id>/inspection/create/', inspection_views.InspectionCreateView.as_view(), name='create_inspection'),
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/', inspection_views.InspectionDetailView.as_view(), name='inspection_detail'),

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Parish, Inspection, GeneralComment
+from .models import Question, Parish, Inspection, GeneralComment, InspectionQuestion
 
 
 class ParishForm(forms.ModelForm):
@@ -17,33 +17,26 @@ class InspectionForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'rows': 3}),
         label="General Comment"
     )
-    YES_NO_DONT_KNOW = [
-        ('yes', 'Yes'),
-        ('no', 'No'),
-        ('dont_know', "Don't Know")
-    ]
 
     class Meta:
         model = Inspection
-        fields = [
-            'signage', 'general_surfaces_debris', 'general_surfaces_grids',
-            'litter_bins_secure', 'litter_bins_empty', 'seating_stable',
-            'swing_supports_secure', 'swing_caps_fitted', 'swing_unit_stable',
-            'swing_seats_secure', 'swing_chains_wear', 'swing_surfacing_condition',
-            'slide_secure', 'slide_clean', 'slide_surfacing_condition',
-            'cableway_supports_secure', 'cableway_unit_stable', 'cableway_caps_present', 'cableway_suspension_chain',
-            'cableway_traveller_smooth', 'cableway_take_off', 'cableway_surfacing_condition',
-            'tunnel_damage_free', 'tunnel_clean', 'tunnel_palisade_stable',
-            'tunnel_surfacing_condition', 'logs_secure', 'logs_free_of_decay',
-            'logs_surfacing_condition', 'climber_logs_secure', 'climber_components_secure',
-            'climber_unit_stable', 'climber_holds_present', 'climber_surfacing_condition'
-        ]
-        widgets = {
-            field_name: forms.Select(choices=[('yes', 'Yes'), ('no', 'No'), ('dont_know', "Don't Know")])
-            for field_name in fields
-        }
+        fields = []  # Keep this empty, as we will add fields dynamically
 
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Add dynamic fields for each default question
+        questions = Question.objects.filter(is_default=True)
+        for question in questions:
+            field_name = f'question_{question.id}'
+            self.fields[field_name] = forms.ChoiceField(
+                label=question.question_text,
+                choices=[('yes', 'Yes'), ('no', 'No'), ('dont_know', "Don't Know")],
+                widget=forms.Select(),
+                required=False
+            )
+            self.fields[field_name].question_instance = question  # Attach the question instance for reference
+
         # Allow passing the existing comment when editing
         if 'instance' in kwargs and kwargs['instance']:
             # Set initial comment_text from the existing GeneralComment (if any)
@@ -51,4 +44,15 @@ class InspectionForm(forms.ModelForm):
             general_comment = GeneralComment.objects.filter(inspection=inspection_instance).first()
             kwargs['initial'] = kwargs.get('initial', {})
             kwargs['initial']['comment_text'] = general_comment.comment_text if general_comment else ""
-        super().__init__(*args, **kwargs)
+
+            # Set initial responses for existing questions
+            for question in questions:
+                inspection_question = inspection_instance.questions.filter(question_text=question.question_text).first()
+                if inspection_question:
+                    self.fields[f'question_{question.id}'].initial = inspection_question.response
+
+
+class InspectionQuestionForm(forms.ModelForm):
+    class Meta:
+        model = InspectionQuestion
+        fields = ['answer']  # Only allow editing of the answer

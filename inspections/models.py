@@ -73,24 +73,39 @@ class Inspection(models.Model):
     climber_holds_present = models.CharField(max_length=10, choices=CHOICES, default='other')
     climber_surfacing_condition = models.CharField(max_length=10, choices=CHOICES, default='other')
 
+    def save(self, *args, **kwargs):
+        # Only assign parish_number if it's not set (i.e., during creation)
+        if not self.parish_id:
+            # Get the count of available parishes (filtering out deleted ones)
+            max_number = Parish.objects.filter(parish_id__isnull=False).count() + 1
+            self.parish_id = max_number
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Inspection for {self.parish.name} on {self.created_at}"
 
 
 class Question(models.Model):
-    inspection = models.ForeignKey(Inspection, on_delete=models.CASCADE)
     question_text = models.TextField()
+    is_default = models.BooleanField(default=False)
+    inspection = models.ForeignKey(Inspection, on_delete=models.CASCADE, related_name='questions', null=True, blank=True)
     response = models.CharField(
         max_length=20,
-        choices=[
-            ('yes', 'Yes'),
-            ('no', 'No'),
-            ('other', "Other")
-        ]
+        choices=[('yes', 'Yes'), ('no', 'No'), ('other', "Other")],
+        blank=True
     )
 
     def __str__(self):
         return self.question_text
+
+class InspectionQuestion(models.Model):
+    """Model to link Inspection to its Questions and store answers."""
+    inspection = models.ForeignKey(Inspection, on_delete=models.CASCADE)  # Link to Inspection
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)  # Link to Question
+    answer = models.TextField(blank=True, null=True)  # Field to store answer for the question
+
+    def __str__(self):
+        return f"{self.inspection} - {self.question}"
 
 
 class GeneralComment(models.Model):
@@ -99,3 +114,5 @@ class GeneralComment(models.Model):
 
     def __str__(self):
         return f"Comment for {self.inspection.parish.name}"
+
+

@@ -2,6 +2,7 @@
 
 <div class="list-group">
     <img class="rounded-circle ml-3 mb-2 mt-2" src="{{ parish.image.url }}" style="width: 80px; height: 80px;">
+    <a href="{% url 'home' %}" class="btn btn-secondary" style="position:absolute; top:10px; right:10px">Return to Home</a>
     <div>
         <h4 class="ml-3 m">Parish: {{ parish.name }}</h4>
     </div>
@@ -12,6 +13,7 @@
 
 {% if request.user.is_authenticated and parish.created_by == request.user %}
     <a href="{% url 'create_inspection' parish.id %}" class="btn btn-primary ml-3 mb-2">Create Inspection</a>
+    <a href="{% url 'delete_parish' parish.id %}" class="btn btn-danger ml-3 mb-2">Delete Parish</a>
 {% endif %}
 
 <table class="table table-bordered">
