@@ -15,6 +15,7 @@
 #### Things to consider for next update
 - Signals is incorporated, however more questions in "Questions" section in admin page get appended each time any user creates or edits an inspection, because the questions and answers are saved for the user and its own set gets added to the previous set. One proposal is to categorize all questions and store the responses for each static category for each user (the admin can edit the questions in admin), each user to have their own set of ONLY responses for EACH of their inspection. Have to look into this**
 - Be able to modify profile pic in parish detail page anytime.
+- Questions answers selectable must be set right to add "other" instead of "dont know".
 ### Example UI
 <img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/home.jpg" width="800"/>
 <img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/fancyparish.jpg" width="800"/>
