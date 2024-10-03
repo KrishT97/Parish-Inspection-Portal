@@ -1,5 +1,8 @@
 ## Update V4 Working
 ### Steps to make everything work
+
+_Note: add @admin.register(Parish) for ParishAdmin, @admin.register(Inspection) for InspectionAdmin and @admin.register(InspectionQuestion) for InspectionQuestionAdmin if required_
+
 1- Import the code in local system with the project directory being parish_inspection, make sure to load your own virtual env directory (venv)
 
 2- Open terminal once located in the directory and run the following command
@@ -70,7 +73,7 @@ The Inspection questions tab contains all responses of users for their inspectio
 ### Features
 
 - Views.py is now modified to be class based instead of function based.
-- Edited inspections will update their won date and time and move up to recent inspections in the list.
+- Edited inspections will update their own date and time and move up to recent inspections in the list.
 - All edited inspections are autonomous in their behaviour, no collision in responses with other inspections in the same parish.
 - Improved register and login page UI
 - For each Parish creation, a profile pic default or user uploaded will be shown.
