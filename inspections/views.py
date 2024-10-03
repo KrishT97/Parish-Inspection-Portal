@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
-from .models import Parish, Inspection, Question, GeneralComment
+from .models import Parish, Inspection, Question, GeneralComment, InspectionQuestion
 from .forms import ParishForm, InspectionForm
 from django.utils import timezone
 
@@ -43,8 +43,8 @@ class ParishCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
+        form.instance.created_by = self.request.user
         parish = form.save(commit=False)
-        parish.created_by = self.request.user  # Set the created_by field
         parish.save()
         return redirect(self.success_url)
 
@@ -57,9 +57,11 @@ class ParishDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        parish = self.get_object()
+        # Fetch all inspections ordered by the most recent update
         context['inspections'] = self.object.inspections.all().order_by('-updated_at')
-        context['is_creator'] = self.request.user == self.object.created_by
         context['num_inspections'] = self.object.inspections.count()
+        context['is_creator'] = self.request.user.is_authenticated and parish.created_by == self.request.user
         return context
 
 
@@ -72,25 +74,22 @@ class InspectionCreateView(LoginRequiredMixin, CreateView):
         parish = Parish.objects.get(id=self.kwargs['parish_id'])
         inspection = form.save(commit=False)
         inspection.parish = parish
-        inspection.created_by = self.request.user
         inspection.save()
 
-        # Handle the general comment
         comment_text = form.cleaned_data.get('comment_text', '')
         if comment_text:
             GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
 
-        # Use existing default questions for the inspection, no new questions are created
+        # Save responses to questions
         for field_name, field_value in form.cleaned_data.items():
             if field_name.startswith('question_'):
                 question_id = int(field_name.split('_')[1])
                 question_instance = Question.objects.get(id=question_id)
 
-                # Create a link between this inspection and the existing question without creating a new question
-                inspection.questions.create(
-                    question_text=question_instance.question_text,  # Keep original question text
-                    response=field_value,
-                    is_default=True  # or False if some questions are non-default
+                InspectionQuestion.objects.create(
+                    inspection=inspection,
+                    question=question_instance,
+                    answer=field_value
                 )
 
         return redirect('parish_detail', parish_id=parish.id)
@@ -103,15 +102,10 @@ class InspectionDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Fetch all questions and their related answers (responses) for this inspection
-        inspection_questions = self.object.questions.all()
-
-        # Pass the questions and responses to the context
+        # Fetch all questions and their related answers for this inspection
+        inspection_questions = self.object.inspection_questions.all()
         context['inspection_questions'] = inspection_questions
-
-        # Fetch the general comment associated with the inspection
         context['comment'] = GeneralComment.objects.filter(inspection=self.object).first()
-
         return context
 
 
@@ -122,23 +116,21 @@ class InspectionEditView(LoginRequiredMixin, UpdateView):
     pk_url_kwarg = 'inspection_id'
 
     def form_valid(self, form):
-        inspection = form.save(commit=False)  # Save the inspection object without committing yet
-        inspection.updated_at = timezone.now()
+        inspection = form.save(commit=False)
+        inspection.updated_at = timezone.now()  # Update the timestamp
         inspection.save()
 
-        # Update question responses without clearing the existing questions
+        # Update responses to questions
         for field_name, field_value in form.cleaned_data.items():
             if field_name.startswith('question_'):
                 question_id = int(field_name.split('_')[1])
                 question_instance = Question.objects.get(id=question_id)
 
-                # Find the corresponding question in the inspection and update the response
-                inspection_question = inspection.questions.filter(question_text=question_instance.question_text).first()
-                if inspection_question:
-                    inspection_question.response = field_value
-                    inspection_question.save()
+                # Find and update the response for the inspection question
+                inspection_question = InspectionQuestion.objects.get(inspection=inspection, question=question_instance)
+                inspection_question.answer = field_value
+                inspection_question.save()
 
-        # Handle the general comment
         comment_text = form.cleaned_data.get('comment_text', '').strip()
         general_comment = GeneralComment.objects.filter(inspection=inspection).first()
 
@@ -152,7 +144,6 @@ class InspectionEditView(LoginRequiredMixin, UpdateView):
             general_comment.delete()
 
         return redirect('parish_detail', parish_id=inspection.parish.id)
-
 
 
 class InspectionDeleteView(DeleteView):

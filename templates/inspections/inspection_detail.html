@@ -8,10 +8,10 @@
         </tr>
     </thead>
     <tbody>
-        {% for question in inspection_questions %}
+        {% for inspection_question in inspection_questions %}
         <tr>
-            <td>{{ question.question_text }}</td>
-            <td>{{ question.get_response_display }}</td>
+            <td>{{ inspection_question.question.question_text }}</td>
+            <td>{{ inspection_question.answer }}</td>
         </tr>
         {% endfor %}
     </tbody>
