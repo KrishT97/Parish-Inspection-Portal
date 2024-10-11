@@ -98,7 +98,7 @@ The Inspection questions tab contains all responses of users for their inspectio
 
 <img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/home.jpg" width="1000"/>
 
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/register.jpg" width="1000"/>
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/register.jpg" width="400"/>
 
 <img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/parish_detail.jpg" width="1000"/>
 
