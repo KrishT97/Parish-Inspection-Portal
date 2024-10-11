@@ -6,6 +6,9 @@ from django.utils import timezone
 class Parish(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(default="")
+    location = models.CharField(max_length=255, default="")
+    contact = models.CharField(max_length=100, default="")
+    phone_number = models.CharField(max_length=20, default="")
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(default=timezone.now)
     image = models.ImageField(upload_to='profile_pics/', default='default.jpg')

@@ -1,8 +1,15 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-<h2>Deletion Confirmed</h2>
-<p>The following inspection for "{{ object.parish }}" has been deleted.</p>
+{% extends 'inspections/base.html' %}
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Go back</button>
-</form>
+{% block title %}Deletion Confirmed{% endblock %}
+
+{% block content %}
+    <h2>Deletion Confirmed</h2>
+    <p>The following inspection for "{{ object.parish }}" has been deleted.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Go back</button>
+    </form>
+{% endblock %}
+
+

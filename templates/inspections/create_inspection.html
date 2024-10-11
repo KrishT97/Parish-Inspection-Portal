@@ -1,13 +1,8 @@
-<!-- inspections/create_inspection.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Inspection</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-</head>
-<body>
+{% extends 'inspections/base.html' %}
+
+{% block title %}Create Inspection{% endblock %}
+
+{% block content %}
     <div class="container mt-5">
         <h2>Create Inspection for Parish: {{ parish.name }}</h2>
 
@@ -17,5 +12,4 @@
             <button type="submit" class="btn btn-primary">Submit Inspection</button>
         </form>
     </div>
-</body>
-</html>
+{% endblock %}

@@ -22,6 +22,7 @@ class HomeView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['is_paginated'] = self.paginate_by < self.get_queryset().count()
+        context['count_parishes'] = self.get_queryset().count()
         return context
 
 
@@ -76,10 +77,6 @@ class InspectionCreateView(LoginRequiredMixin, CreateView):
         inspection.parish = parish
         inspection.save()
 
-        comment_text = form.cleaned_data.get('comment_text', '')
-        if comment_text:
-            GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
-
         # Save responses to questions
         for field_name, field_value in form.cleaned_data.items():
             if field_name.startswith('question_'):
@@ -91,6 +88,10 @@ class InspectionCreateView(LoginRequiredMixin, CreateView):
                     question=question_instance,
                     answer=field_value
                 )
+
+        comment_text = form.cleaned_data.get('comment_text', '')
+        if comment_text:
+            GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
 
         return redirect('parish_detail', parish_id=parish.id)
 
