@@ -1,6 +1,8 @@
 ## Update V5 Working
 ### Steps to make everything work
 
+_Ideally remove the database sqlite, migrations file and venv. Create them again to make everything work from scratch and not interfere with previous updates_
+
 1- Import the code in local system with the project directory being parish_inspection, make sure to **load your own virtual env** directory (venv)
 
 2- Open terminal once located in the directory and run the following command
