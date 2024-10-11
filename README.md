@@ -1,9 +1,7 @@
-## Update V4 Working
+## Update V5 Working
 ### Steps to make everything work
 
-_Note: add @admin.register(Parish) for ParishAdmin, @admin.register(Inspection) for InspectionAdmin and @admin.register(InspectionQuestion) for InspectionQuestionAdmin if required_
-
-1- Import the code in local system with the project directory being parish_inspection, make sure to load your own virtual env directory (venv)
+1- Import the code in local system with the project directory being parish_inspection, make sure to **load your own virtual env** directory (venv)
 
 2- Open terminal once located in the directory and run the following command
     
@@ -29,25 +27,25 @@ _Note: add @admin.register(Parish) for ParishAdmin, @admin.register(Inspection) 
         "Slide – Embankment: Is the starting section secure, stable and free from damage?",
         "Slide – Embankment: Is the slide-chute in a good condition, clean and free from any foreign objects and with no sharp edges?",
         "Slide – Embankment: Is the surfacing undamaged and in a good condition?",
-        "(Cableway) Are all the supports, barriers secure and undamaged with no signs of obvious corrosion/decay present?",
-        "(Cableway) Is the unit stable?",
-        "(Cableway) Are all component parts present including caps?",
-        "(Cableway) Are the cable, seat, and suspension chain present, secure and free from damage?",
-        "(Cableway) Does the traveller run smoothly with no undue noise?",
-        "(Cableway) Are the take-off and landing areas undamaged?",
-        "(Cableway) Is the surfacing undamaged and free from trips?",
-        "(Agility Tunnel Mound -Large) Are the tunnel ends free from damage?",
-        "(Agility Tunnel Mound -Large) Is the tunnel clean and undamaged?",
-        "(Agility Tunnel Mound -Large) Are the palisade logs, steps, ladder and barriers in a good stable condition with no obvious signs of decay?",
-        "(Agility Tunnel Mound -Large) Is the surfacing in good order?",
-        "(Natural Play – Logs) Are the logs secure, free from damage and any obvious signs of decay?",
-        "(Natural Play – Logs) Is the unit free from slippery algae?",
-        "(Natural Play – Logs) Is the surfacing undamaged and in a good condition with no erosion and puddling?",
-        "(Climber - Logs) Are all supports stable, secure and free from damage and any obvious signs of decay?",
-        "(Climber - Logs) Are all component parts present and secure including caps and holds?",
-        "(Climber - Logs) Is the unit stable and free from slippery algae?",
-        "(Climber - Logs) Are the climbing holds present, secure and non-rotating?",
-        "(Climber - Logs) Is the surfacing undamaged and free from trips?"
+        "Cableway: Are all the supports, barriers secure and undamaged with no signs of obvious corrosion/decay present?",
+        "Cableway: Is the unit stable?",
+        "Cableway: Are all component parts present including caps?",
+        "Cableway: Are the cable, seat, and suspension chain present, secure and free from damage?",
+        "Cableway: Does the traveller run smoothly with no undue noise?",
+        "Cableway: Are the take-off and landing areas undamaged?",
+        "Cableway: Is the surfacing undamaged and free from trips?",
+        "Agility Tunnel Mound -Large: Are the tunnel ends free from damage?",
+        "Agility Tunnel Mound -Large: Is the tunnel clean and undamaged?",
+        "Agility Tunnel Mound -Large: Are the palisade logs, steps, ladder and barriers in a good stable condition with no obvious signs of decay?",
+        "Agility Tunnel Mound -Large: Is the surfacing in good order?",
+        "Natural Play – Logs: Are the logs secure, free from damage and any obvious signs of decay?",
+        "Natural Play – Logs: Is the unit free from slippery algae?",
+        "Natural Play – Logs: Is the surfacing undamaged and in a good condition with no erosion and puddling?",
+        "Climber - Logs: Are all supports stable, secure and free from damage and any obvious signs of decay?",
+        "Climber - Logs: Are all component parts present and secure including caps and holds?",
+        "Climber - Logs: Is the unit stable and free from slippery algae?",
+        "Climber - Logs: Are the climbing holds present, secure and non-rotating?",
+        "Climber - Logs: Is the surfacing undamaged and free from trips?"
     ]
 
     for question_text in default_questions:
@@ -70,7 +68,13 @@ The Inspections tab contains all Inspections created.
 
 The Inspection questions tab contains all responses of users for their inspections.
 
-### Features
+### New Features
+
+- Better UI, icons, theme, base.html..etc
+- Admit blank responses, meaning that if the user does not choose an option there is no response.
+- Applied clean code (for example, Admin.py didn't need the code we had previously).
+
+### Old Features
 
 - Views.py is now modified to be class based instead of function based.
 - Edited inspections will update their own date and time and move up to recent inspections in the list.
@@ -90,3 +94,12 @@ The Inspection questions tab contains all responses of users for their inspectio
 - Signals works to make the questions from the Questions tab in admin link to each inspection (whether it would be to create or edit).
 
 
+### Examples
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/home.jpg" width="1000"/>
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/register.jpg" width="1000"/>
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/parish_detail.jpg" width="1000"/>
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/edit.jpg" width="1000"/>
