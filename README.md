@@ -1,7 +1,5 @@
-## Update V5 Working
+## Update V6 Working
 ### Steps to make everything work
-
-_Ideally remove the database sqlite, migrations file and venv. Create them again to make everything work from scratch and not interfere with previous updates_
 
 1- Import the code in local system with the project directory being parish_inspection, make sure to **load your own virtual env** directory (venv)
 
@@ -57,7 +55,11 @@ _Ideally remove the database sqlite, migrations file and venv. Create them again
 
 5- Make migrations and migrate if necessary (shouldn't be the case because the migrations file is present).
 
-6- Run the server:
+6- Before you run the server make sure to install this package:
+
+     pip install xthml2pdf
+    
+7- Run the server:
 
      python manage.py runserver 
 
@@ -70,13 +72,31 @@ The Inspections tab contains all Inspections created.
 
 The Inspection questions tab contains all responses of users for their inspections.
 
-### New Features
+### Insights and fixes on the latest update
 
-- Better UI, icons, theme, base.html..etc
-- Admit blank responses, meaning that if the user does not choose an option there is no response.
-- Applied clean code (for example, Admin.py didn't need the code we had previously).
+1-	Questions was wrong formatted to start with, having more than 34 questions already preloaded and with an unintended question, making it seem as if there is a ‘data bug’. Solution is to **remove all questions from the admin panel** and add them though shell again (34) checking the validity in the Questions tab.
 
-### Old Features
+2-	The inspection view page is ok, **added a feather.js slash symbol for ‘other’**, would be ideal to have a symbol for other as well and not just blank. However, on a general note the symbols could be confusing for new users or those who are not familiar with the site, instead of a tick symbol or cross for ‘yes’ or ‘no’ respectively, we could just add the text in itself (‘yes’, ‘no’, ‘other’). Sometimes making the site more aesthetically pleasing could lead to worse user experience, we should try to aim for simplicity and easy comprehension for users.
+
+3-	Inspection edit page was not showing the questions and its associated answers (blank), **fixed by tweaking the views.py code for the edit view**.
+
+4-	Removed inspection edit button from the inspection detail page, for two reasons, 1: it doesn’t work and if we had to make it work would have to change the inspection detail view code logic, 2: avoiding duplication of action, there is already an edit button in parish detail, no need to add another button in inspection detail as well. Instead, what could be added is **“Go back” button (done)**.
+
+5-	Code duplication:
+
+    <a class="navbar-brand text-white" href="/">Parish Inspection Portal</a>
+    <a href="{% url 'home' %}" class="text-white">Home</a>
+    
+Both of these do the same thing, they are exactly the same, we should just keep one. For this, I have **removed ‘Home’ reference**.
+
+6-	Inspection detail page shows 5 questions in each page, this is too low, I would aim higher as it also leads to 7 pages, we want to somewhat occupy the page and have minimal pages. **10 questions per page** leads to 4 pages in total, seems a good number.
+
+7-	**Implemented download button**, the pdf generation template does not use base.html intentionally, as we are creating the draft. The download button is available in parish detail page.
+
+8-	Changed the delete inspection icon to actual right **icon: trash**.
+
+
+### Old Features (ignore)
 
 - Views.py is now modified to be class based instead of function based.
 - Edited inspections will update their own date and time and move up to recent inspections in the list.
