@@ -3,39 +3,65 @@
 {% block title %}Home - Parish Inspections{% endblock %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Available Parishes</h1>
-        <h5>Total Parishes: {{ parishes.count }}</h5> <!-- Display total number of parishes -->
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="page-title text-center mb-4">Parish Inspection Portal (PIP)</h1>
+        </div>
     </div>
-
-    <div class="list-group">
+    <div class="row">
+        <div class="col-sm-6 available-parish-bar">
+            <h3 class="mb-1">Available Parishes</h3>
+            <small class="text-muted">Please add the establishment for review</small>
+        </div>
+        <div class="col-sm-6">
+            <h5 class="text-right">Total Parishes: {{ parishes.count }}</h5> <!-- Display total number of parishes -->
+        </div>
+    </div>
+    <hr class="mt-1">
+    <div class="row">
         {% for parish in parishes %}
-            <div class="list-group-item d-flex align-items-center">
-                <img class="rounded-circle mr-3" src="{{ parish.image.url }}" alt="Parish Image" style="width: 50px; height: 50px;">
-                <div class="flex-grow-1">
-                    <h4>{{ parish.name }}</h4>
-                    <p>{{ parish.description }}</p>
-                    <p><strong>Location:</strong> {{ parish.location }}</p>
-                    <p><strong>Contact:</strong> {{ parish.contact }}</p>
-                    <p><strong>Phone Number:</strong> {{ parish.phone_number }}</p>
-                </div>
-                <div class="ml-auto">
-                    <a href="{% url 'parish_detail' parish.id %}" class="btn btn-primary ml-auto" style="position: absolute; right: 20px; top: 60px; width: 100px;">View</a>
-                    <div class="mt-3">
-                        <strong>Inspections:</strong>
-                        {% with parish.inspections.all|dictsortreversed:"updated_at" as sorted_inspections %}
-                            {% with sorted_inspections|slice:":5" as recent_inspections %}
-                                {% for inspection in recent_inspections %}
-                                    <a href="{% url 'inspection_detail' parish.id inspection.id %}">
-                                        {{ forloop.counter }} <!-- Display numbered shortcuts -->
-                                    </a>
-                                    {% if not forloop.last %}|{% endif %}
-                                {% endfor %}
-                            {% endwith %}
-                        {% endwith %}
+        <div class="col-sm-6 card-column"><!--Class added by Sohail-->
+            <div class="card parish-card p-3 mb-3">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <figure>
+                            <a href="{% url 'home' %}" class="text-white">
+                                <img class="card-img-top" src="{{ parish.image.url }}" alt="Parish Image">
+                            </a>
+                        </figure>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="card-body p-0">
+                            <h5 class="card-title"><a href="{% url 'parish_detail' parish.id %}">{{ parish.name }}</a></h5>
+                            <hr>
+                            <p class="card-text">{{ parish.description }}</p>
+                            <p> <a href="{% url 'parish_detail' parish.id %}" class="btn btn-primary col pt-2 pb-2"><i data-feather="eye"></i>View Parish</a></p>
+                        </div>
                     </div>
                 </div>
+                    
+                <p class="card-text mt-3">
+                    <span><i data-feather="map-pin"></i>{{ parish.location }}</span> 
+                    <span><i data-feather="user"></i>{{ parish.contact }}</span>
+                    <span><i data-feather="phone"></i>{{ parish.phone_number }}</span>
+                    
+                
+                {% with parish.inspections.all|dictsortreversed:"updated_at" as sorted_inspections %}
+                    {% with sorted_inspections|slice:":5" as recent_inspections %}
+                        {% for inspection in recent_inspections %}
+                            <strong><i data-feather="check-square"></i>
+                            <a href="{% url 'inspection_detail' parish.id inspection.id %}">
+                                {{ forloop.counter }} <!-- Display numbered shortcuts -->
+                            </a>
+                            {% if not forloop.last %}|{% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                {% endwith %}
+                </strong>
+               
+                </p>
             </div>
+        </div>
         {% empty %}
             <p>No parishes available.</p>
         {% endfor %}

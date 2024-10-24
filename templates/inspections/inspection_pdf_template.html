@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inspection Report</title>
+    <style>
+        /* Basic styling for PDF */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2, h3, h4, h5 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            table-layout: auto; /* Ensure table columns take fixed widths */
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px; /* Reduce padding to save space */
+            text-align: left;
+            word-wrap: break-word; /* Allow content to wrap inside cells */
+            font-size: 12px; /* Reduce font size if necessary */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        td {
+            vertical-align: top; /* Align text to the top to avoid uneven rows */
+        }
+    </style>
+</head>
+<body>
+    <h2>Parish: {{ parish.name }}</h2>
+    <p><strong>Date:</strong> {{ inspection.updated_at|date:"F j, Y, g:i a" }}</p>
+
+    <h3>Inspection Responses</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="width: 70%;">Question</th> <!-- Assign 70% to the question column -->
+                <th style="width: 30%;">Response</th> <!-- Assign 30% to the response column -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for response in responses %}
+            <tr>
+                <td>{{ response.question.question_text }}</td>
+                <td>{{ response.answer }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No responses available</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+

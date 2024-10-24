@@ -35,8 +35,9 @@ urlpatterns = [
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/', inspection_views.InspectionDetailView.as_view(), name='inspection_detail'),
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/edit/', inspection_views.InspectionEditView.as_view(), name='edit_inspection'),
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/delete/', inspection_views.InspectionDeleteView.as_view(), name='delete_inspection'),
+    path('parish/<int:parish_id>/inspection/<int:inspection_id>/export_pdf/', inspection_views.ExportInspectionPDFView.as_view(), name='export_inspection_pdf'),
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
-
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

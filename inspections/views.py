@@ -1,13 +1,16 @@
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponseForbidden
-from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden, HttpResponse
+from django.template.loader import render_to_string
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from xhtml2pdf import pisa
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import Parish, Inspection, Question, GeneralComment, InspectionQuestion
 from .forms import ParishForm, InspectionForm
 from django.utils import timezone
+from django.core.paginator import Paginator
 
 
 class HomeView(ListView):
@@ -66,6 +69,8 @@ class ParishDetailView(DetailView):
         return context
 
 
+
+
 class InspectionCreateView(LoginRequiredMixin, CreateView):
     model = Inspection
     form_class = InspectionForm
@@ -103,10 +108,26 @@ class InspectionDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        inspection = self.get_object()
+
+        # Fetch all questions related to this inspection
+        inspection_questions = inspection.inspection_questions.all()  # Make sure to have the related name correctly set
+
+    # Set up pagination
+        paginator = Paginator(inspection_questions, 10)  # Show 5 questions per page
+        page_number = self.request.GET.get('page')  # Get the page number from the URL
+        questions_page = paginator.get_page(page_number)  # Get the relevant page of questions
+
+    # Add paginated questions and comments to the context
+        context['inspection_questions'] = questions_page  # Use the paginated questions
+        context['comment'] = GeneralComment.objects.filter(inspection=inspection).first()
+
+   # def get_context_data(self, **kwargs):
+   #     context = super().get_context_data(**kwargs)
         # Fetch all questions and their related answers for this inspection
-        inspection_questions = self.object.inspection_questions.all()
-        context['inspection_questions'] = inspection_questions
-        context['comment'] = GeneralComment.objects.filter(inspection=self.object).first()
+   #     inspection_questions = self.object.inspection_questions.all()
+   #     context['inspection_questions'] = inspection_questions
+   #     context['comment'] = GeneralComment.objects.filter(inspection=self.object).first()
         return context
 
 
@@ -190,3 +211,39 @@ class ParishDeleteView(DeleteView):
         self.object = self.get_object()
         self.object.delete()
         return redirect(self.get_success_url())
+
+
+class ExportInspectionPDFView(DetailView):
+    model = Inspection
+    template_name = 'inspections/inspection_pdf_template.html'
+    context_object_name = 'inspection'
+    pk_url_kwarg = 'inspection_id'
+
+    def get(self, request, *args, **kwargs):
+        # Explicitly call get_object to set self.object
+        inspection = self.get_object()  # This loads the inspection object
+        parish = get_object_or_404(Parish, id=self.kwargs['parish_id'])
+
+        # Context data for PDF rendering
+        context = {
+            'parish': parish,
+            'inspection': inspection,
+            'responses': inspection.inspection_questions.all()  # Assuming responses are related to inspection questions
+        }
+
+        # Render the inspection details to a template (HTML)
+        html = render_to_string(self.template_name, context)
+
+        # Prepare the PDF response
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="inspection_{inspection.id}.pdf"'
+
+        # Convert HTML to PDF using xhtml2pdf
+        pisa_status = pisa.CreatePDF(html, dest=response)
+
+        # Check if PDF generation was successful
+        if pisa_status.err:
+            return HttpResponse('Error generating PDF', status=500)
+
+        # Return the generated PDF
+        return response
