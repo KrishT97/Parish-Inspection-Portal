@@ -6,7 +6,7 @@
     <div class="card parish-card parish-details-card p-3">
         
         <h3>Inspection for {{ inspection.parish.name }}
-            <a href="{% url 'parish_detail' inspection.parish.id %}" class="btn btn-primary ml-1" title="Go back"><i data-feather="corner-down-left"></i>Go back</a></h3>
+            <a href="{% url 'parish_detail' inspection.parish.id %}" class="btn btn-secondary back-btn" title="Back" style="margin-top: -13px; display:flex;"><i data-feather="arrow-left-circle"></i>Back</a></h3>
         <table class="table table-bordered inspections-table">
             <thead>
                 <tr>

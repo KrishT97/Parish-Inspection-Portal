@@ -36,6 +36,7 @@ urlpatterns = [
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/edit/', inspection_views.InspectionEditView.as_view(), name='edit_inspection'),
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/delete/', inspection_views.InspectionDeleteView.as_view(), name='delete_inspection'),
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/export_pdf/', inspection_views.ExportInspectionPDFView.as_view(), name='export_inspection_pdf'),
+    path('parish/<int:parish_id>/edit/', inspection_views.ParishEditView.as_view(), name='edit_parish'),
 ]
 
 if settings.DEBUG:

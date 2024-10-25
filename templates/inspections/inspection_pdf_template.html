@@ -49,7 +49,13 @@
             {% for response in responses %}
             <tr>
                 <td>{{ response.question.question_text }}</td>
-                <td>{{ response.answer }}</td>
+                <td>
+                    {% if response.answer == "" %}
+                        blank
+                    {% else %}
+                        {{ response.answer }}
+                    {% endif %}
+                </td>
             </tr>
             {% empty %}
             <tr>

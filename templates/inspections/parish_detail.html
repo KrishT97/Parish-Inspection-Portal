@@ -15,6 +15,7 @@
                 <p class="">Number of inspections: {{ num_inspections }}</p>
                 {% if request.user.is_authenticated and parish.created_by == request.user %}
                     <a href="{% url 'create_inspection' parish.id %}" class="btn btn-primary mb-2"><i data-feather="plus-circle"></i>Create Inspection</a>
+                    <a href="{% url 'edit_parish' parish.id %}" class="btn btn-warning mb-2"><i data-feather="edit"></i>Edit Parish</a>
                     <a href="{% url 'delete_parish' parish.id %}" class="btn btn-danger mb-2"> <i data-feather="trash-2"></i>Delete Parish</a>
                 {% endif %}
                 <table class="table table-bordered text-center mt-2">

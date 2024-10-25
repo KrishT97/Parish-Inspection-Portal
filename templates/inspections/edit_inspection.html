@@ -4,13 +4,23 @@
 
 {% block content %}
     <h3>Edit Inspection for {{ object.parish }}</h3>
+    <a href="{% url 'parish_detail' inspection.parish.id %}" class="btn btn-secondary back-btn" title="Back" style="margin-top: 60px; margin-right: 55px; gap: 5px; display: flex;">
+        <i data-feather="arrow-left-circle"></i> Back
+    </a>
 
     <form method="POST">
         {% csrf_token %}
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Questions</th>
+                    <th>
+                        Questions
+                        <div style="background-color: darkslategray; padding: 10px; border-radius: 2px; display: inline-block; float: right; font-size: 14px">
+                            <span style="color: greenyellow; font-weight: bold;">
+                                (Total questions answered: {{ answered_questions }}/{{ total_questions }})
+                            </span>
+                        </div>
+                    </th>
                     <th>Yes</th>
                     <th>No</th>
                     <th>Other</th>
@@ -39,3 +49,4 @@
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 {% endblock %}
+

@@ -69,8 +69,6 @@ class ParishDetailView(DetailView):
         return context
 
 
-
-
 class InspectionCreateView(LoginRequiredMixin, CreateView):
     model = Inspection
     form_class = InspectionForm
@@ -113,21 +111,21 @@ class InspectionDetailView(DetailView):
         # Fetch all questions related to this inspection
         inspection_questions = inspection.inspection_questions.all()  # Make sure to have the related name correctly set
 
-    # Set up pagination
+        # Set up pagination
         paginator = Paginator(inspection_questions, 10)  # Show 5 questions per page
         page_number = self.request.GET.get('page')  # Get the page number from the URL
         questions_page = paginator.get_page(page_number)  # Get the relevant page of questions
 
-    # Add paginated questions and comments to the context
+        # Add paginated questions and comments to the context
         context['inspection_questions'] = questions_page  # Use the paginated questions
         context['comment'] = GeneralComment.objects.filter(inspection=inspection).first()
 
-   # def get_context_data(self, **kwargs):
-   #     context = super().get_context_data(**kwargs)
+        # def get_context_data(self, **kwargs):
+        #     context = super().get_context_data(**kwargs)
         # Fetch all questions and their related answers for this inspection
-   #     inspection_questions = self.object.inspection_questions.all()
-   #     context['inspection_questions'] = inspection_questions
-   #     context['comment'] = GeneralComment.objects.filter(inspection=self.object).first()
+        #     inspection_questions = self.object.inspection_questions.all()
+        #     context['inspection_questions'] = inspection_questions
+        #     context['comment'] = GeneralComment.objects.filter(inspection=self.object).first()
         return context
 
 
@@ -137,9 +135,27 @@ class InspectionEditView(LoginRequiredMixin, UpdateView):
     template_name = 'inspections/edit_inspection.html'
     pk_url_kwarg = 'inspection_id'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = context['form']
+
+        # Calculate total questions and answered questions
+        total_questions = 0
+        answered_questions = 0
+        for field in form:
+            if field.label != "General Comment":
+                total_questions += 1
+                if field.value() in ['yes', 'no', 'other']:
+                    answered_questions += 1
+
+        # Pass these counts to the template
+        context['total_questions'] = total_questions
+        context['answered_questions'] = answered_questions
+        return context
+
     def form_valid(self, form):
         inspection = form.save(commit=False)
-        inspection.updated_at = timezone.now()  # Update the timestamp
+        inspection.updated_at = timezone.now()
         inspection.save()
 
         # Update responses to questions
@@ -147,15 +163,13 @@ class InspectionEditView(LoginRequiredMixin, UpdateView):
             if field_name.startswith('question_'):
                 question_id = int(field_name.split('_')[1])
                 question_instance = Question.objects.get(id=question_id)
-
-                # Find and update the response for the inspection question
                 inspection_question = InspectionQuestion.objects.get(inspection=inspection, question=question_instance)
                 inspection_question.answer = field_value
                 inspection_question.save()
 
+        # Handle the general comment
         comment_text = form.cleaned_data.get('comment_text', '').strip()
         general_comment = GeneralComment.objects.filter(inspection=inspection).first()
-
         if comment_text:
             if general_comment:
                 general_comment.comment_text = comment_text
@@ -211,6 +225,25 @@ class ParishDeleteView(DeleteView):
         self.object = self.get_object()
         self.object.delete()
         return redirect(self.get_success_url())
+
+
+class ParishEditView(LoginRequiredMixin, UpdateView):
+    model = Parish
+    form_class = ParishForm
+    template_name = 'inspections/edit_parish.html'
+    pk_url_kwarg = 'parish_id'
+
+    def get_object(self, queryset=None):
+        parish = get_object_or_404(Parish, id=self.kwargs['parish_id'])
+        # Check if the current user is the creator of the parish
+        if parish.created_by != self.request.user:
+            raise HttpResponseForbidden("You are not allowed to edit this parish.")
+        return parish
+
+    def form_valid(self, form):
+        parish = form.save(commit=False)
+        parish.save()
+        return redirect('parish_detail', parish_id=parish.id)
 
 
 class ExportInspectionPDFView(DetailView):
