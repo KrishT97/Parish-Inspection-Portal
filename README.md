@@ -104,13 +104,12 @@ The Inspection questions tab contains all responses of users for their inspectio
 
 ### Examples
 
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/home.jpg" width="1000"/>
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/example3.png" width="1000"/>
 
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/register.jpg" width="400"/>
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/example2.png" width="400"/>
 
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/parish_detail.jpg" width="1000"/>
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/example1.png" width="1000"/>
 
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/edit.jpg" width="1000"/>
 
 
 ### Old Updates
