@@ -102,6 +102,10 @@ The Inspection questions tab contains all responses of users for their inspectio
 
 13- New addition in pdf downloads, the inspection name is also added below the parish name on top of the pdf.
 
+#### What is not implemented yet?
+
+History table, would need more time to look into it and its implementation.
+
 ### Examples
 
 <img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/example3.png" width="1000"/>
