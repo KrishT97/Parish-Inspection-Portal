@@ -1,12 +1,12 @@
 {% extends 'inspections/base.html' %}
 
-{% block title %}Inspection for {{ inspection.parish.name }}{% endblock %}
+{% block title %}{{ inspection }}{% endblock %}
 
 {% block content %}
     <div class="card parish-card parish-details-card p-3">
         
-        <h3>Inspection for {{ inspection.parish.name }}
-            <a href="{% url 'parish_detail' inspection.parish.id %}" class="btn btn-secondary back-btn" title="Back" style="margin-top: -13px; display:flex;"><i data-feather="arrow-left-circle"></i>Back</a></h3>
+        <h4>{{ inspection }}
+            <a href="{% url 'parish_detail' inspection.parish.id %}" class="btn btn-secondary back-btn" title="Back" style="margin-top: -15px; display:flex;"><i data-feather="arrow-left-circle"></i>Back</a></h4>
         <table class="table table-bordered inspections-table">
             <thead>
                 <tr>

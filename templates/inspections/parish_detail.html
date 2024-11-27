@@ -31,7 +31,7 @@
                         {% for inspection in inspections %}
                         <tr>
                             <td><span>{{ parish.created_by }}</span></td>
-                            <td><a href="{% url 'inspection_detail' parish.id inspection.id %}" class="text-inspection"># {{ forloop.revcounter }}</a></td> <!-- Use Django's built-in forloop.counter to numerate -->
+                            <td><a href="{% url 'inspection_detail' parish.id inspection.id %}" class="text-inspection">{{ inspection }}</a></td> <!-- Use Django's built-in forloop.counter to numerate -->
                             <td>{{ inspection.updated_at }}</td>
                             <td>
                                 <!-- View Button with Eye Icon -->

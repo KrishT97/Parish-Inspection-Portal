@@ -34,6 +34,7 @@ class Inspection(models.Model):
 class Question(models.Model):
     question_text = models.TextField()
     is_default = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
     inspection = models.ForeignKey(Inspection, on_delete=models.CASCADE, related_name='questions', null=True,
                                    blank=True)
     response = models.CharField(

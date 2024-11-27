@@ -37,6 +37,9 @@ urlpatterns = [
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/delete/', inspection_views.InspectionDeleteView.as_view(), name='delete_inspection'),
     path('parish/<int:parish_id>/inspection/<int:inspection_id>/export_pdf/', inspection_views.ExportInspectionPDFView.as_view(), name='export_inspection_pdf'),
     path('parish/<int:parish_id>/edit/', inspection_views.ParishEditView.as_view(), name='edit_parish'),
+    path('search-parishes/', inspection_views.ParishSearchView.as_view(), name='search_parishes'),
+    path('reports/', inspection_views.reports_view, name='reports'),
+    path('reports/ajax/', inspection_views.InspectionReportsAjaxDatatableView.as_view(), name='reports_ajax'),  # AJAX endpoint for DataTable
 ]
 
 if settings.DEBUG:

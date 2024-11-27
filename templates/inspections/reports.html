@@ -1,0 +1,66 @@
+{% extends 'inspections/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Inspection Reports</h1>
+
+        <!-- DataTable -->
+        <table id="inspectionReports" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Parish Name</th>
+                    <th>Inspection Owner</th>
+                    <th>Date</th>
+                    <th>Report Name</th>
+                    <th>Download</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically populated by DataTable -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Include necessary JS files -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#inspectionReports').DataTable({
+                "processing": true,
+                "serverSide": true,  // Tell DataTables to expect server-side processing
+                "ajax": {
+                    "url": "{% url 'reports_ajax' %}",  // Ensure this is pointing to the correct URL
+                    "type": "GET",  // Use GET method for the AJAX call
+                    data: function(d) {
+                        // Pass additional data if needed (e.g., filters)
+                        d.searchValue = $('#search-input').val();  // Example for custom search
+                    }
+                },
+                "language": {
+                    "search": ""  // Removes the "Search:" text entirely
+                },
+                "columns": [
+                    { "data": "parish_name" },
+                    { "data": "owner" },
+                    { "data": "date" },
+                    { "data": "name" },
+                    { "data": "download" , orderable: false}
+                ],
+                "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],  // Pagination options
+                "order": [[3, 'asc']],
+                "searching": true,
+                "initComplete": function() {
+                    var searchInput = $('#inspectionReports_filter input[type="search"]');
+                    searchInput.attr('placeholder', 'Search by Parish...');
+                    searchInput.addClass('form-control');
+                }
+            });
+        });
+    </script>
+
+{% endblock %}
+
+

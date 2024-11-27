@@ -28,31 +28,46 @@ class InspectionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        questions = Question.objects.filter(is_default=True)
-        # Dynamically add question fields
-        for question in questions:
+        inspection_instance = kwargs.get('instance')
+        existing_question_ids = set()
+
+        # Dynamically add fields for questions already linked to this inspection
+        if inspection_instance:
+            inspection_questions = InspectionQuestion.objects.filter(
+                inspection=inspection_instance,
+                question__deleted=False  # Exclude deleted questions
+            )
+            for inspection_question in inspection_questions:
+                question = inspection_question.question
+                field_name = f'question_{question.id}'
+                self.fields[field_name] = forms.ChoiceField(
+                    label=question.question_text,  # Use specific text if modified
+                    choices=[('yes', 'Yes'), ('no', 'No'), ('other', 'Other')],
+                    widget=forms.RadioSelect(),
+                    required=False,
+                )
+                # Set initial value for the response
+                self.fields[field_name].initial = inspection_question.answer
+                existing_question_ids.add(question.id)
+
+        # Add fields for any default questions not linked to this inspection
+        default_questions = Question.objects.filter(is_default=True).exclude(id__in=existing_question_ids)
+        for question in default_questions:
             field_name = f'question_{question.id}'
             self.fields[field_name] = forms.ChoiceField(
                 label=question.question_text,
                 choices=[('yes', 'Yes'), ('no', 'No'), ('other', 'Other')],
-                widget=forms.RadioSelect(),  # Changed to RadioSelect for better rendering
-                required=False
+                widget=forms.RadioSelect(),
+                required=False,
             )
 
-        # Set the general comment field's initial value
-        if 'instance' in kwargs and kwargs['instance']:
-            inspection_instance = kwargs['instance']
-            general_comment = GeneralComment.objects.filter(inspection=inspection_instance).first()
-            self.fields['comment_text'].initial = general_comment.comment_text if general_comment else ""
+        # Set initial value for the general comment field
+        general_comment = GeneralComment.objects.filter(
+            inspection=inspection_instance).first() if inspection_instance else None
+        self.fields['comment_text'].initial = general_comment.comment_text if general_comment else ""
 
-            # Set initial values for question responses
-            for inspection_question in inspection_instance.inspection_questions.all():
-                field_name = f'question_{inspection_question.question.id}'
-                self.fields[field_name].initial = inspection_question.answer
-
-        # Move 'comment_text' field to the end
+        # Ensure the `comment_text` field is ordered last
         self.order_fields(field_order=[field for field in self.fields if field != 'comment_text'] + ['comment_text'])
-
 
 class InspectionQuestionForm(forms.ModelForm):
     class Meta:
