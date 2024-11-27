@@ -1,4 +1,4 @@
-## Update V6 Working
+## Phase 1 Post-Delivery
 ### Steps to make everything work
 
 1- Import the code in local system with the project directory being parish_inspection, make sure to **load your own virtual env** directory (venv)
@@ -58,6 +58,8 @@
 6- Before you run the server make sure to install this package:
 
      pip install xthml2pdf
+
+     pip install django-ajax-datatable 
     
 7- Run the server:
 
@@ -72,8 +74,44 @@ The Inspections tab contains all Inspections created.
 
 The Inspection questions tab contains all responses of users for their inspections.
 
-### Insights and fixes on the latest update
+### Updates
 
+1- Search bar implemented in the home screen, as soon as the user types in something, it would show them the list of parishes. Any query matching the Parish would be shown in the dropdown list.
+
+2- Inspection References from #number changed to actual inspection name. The names are intentionally long with their full reference so that they can be cited and searched.
+
+3- Edit inspection and Inspection View pages both have 7 fields to show per page as per the pagination. Keeping consistency.
+
+4- Edit Inspection page has now two more features: Add and Remove questions. These are loaded and updated in the Inspection questions tab rather than Questions tab because of how the Questions tab propagates it's changes as per the model structure to all inspections. Thus also, editing a question is not possible, due to the fact that all questions from the Inspection questions tab are loaded from the Questions tab, and the parameter that shows the question in a given instance of inspection in Inspection questions tab is actually just taken the questions not-editable from the Questions tab. Which means that we would have to modify the Questions tab questions, and doing that means that all questions change because of a single user. The adding and removing feature just adds or eliminates questions for the instances in the Inspection questions tab which is possible to integrate in the site.
+
+5- Adding a question means that whilst one is editing the inspection, the question will only be modifiable upon its responses upon re-editing the inspection.
+
+6- View inspection page and edit inspection page go hand in hand for changes in a single inspection
+
+7- Inspections are autonomous, changes in one inspection will not affect the other inspections in the same parish.
+
+8- New Reports page added in home page within base.html, along with Register and Login redirects, this is accessible to authenticated and also public users (to everyone basically). If it should only be available to authenticated users, the change is very simple in base.html, change the redirect element to be in "if user is authenticated" condition only.
+
+9- Inspection reports uses the django-ajax-datatable package and its modules, the operation is quite complex to derive all inspections and on top of that have a search engine to filter by a column. There is an Ajax endpoint for reports redirect URL. Each report is an inspection, within 5 columns, 10 entries shown in each page. 
+
+10- Reports page datatable shows all inspections and their values for the columns, each column can actually be sortable (By parish name, By Inspection Owner, By Date and also Report Name. Report Names for example are sorted by their ids (which means that oldest made reports will be the first ids and newest will be greater in number, works for sorting them by old to new and viceversa).
+
+11- Download feature in the reports page uses the same logic (and to take advantage of the alredy built download option in Parish page), so the URL redirect is the same and thus logic is reused.
+
+12- New addition in pdf downloads, the inspection name is also added below the parish name on top of the pdf.
+
+### Examples
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/home.jpg" width="1000"/>
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/register.jpg" width="400"/>
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/parish_detail.jpg" width="1000"/>
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/edit.jpg" width="1000"/>
+
+
+### Old Updates
 1-	Questions was wrong formatted to start with, having more than 34 questions already preloaded and with an unintended question, making it seem as if there is a ‘data bug’. Solution is to **remove all questions from the admin panel** and add them though shell again (34) checking the validity in the Questions tab.
 
 2-	The inspection view page is ok, **added a feather.js slash symbol for ‘other’**, would be ideal to have a symbol for other as well and not just blank. However, on a general note the symbols could be confusing for new users or those who are not familiar with the site, instead of a tick symbol or cross for ‘yes’ or ‘no’ respectively, we could just add the text in itself (‘yes’, ‘no’, ‘other’). Sometimes making the site more aesthetically pleasing could lead to worse user experience, we should try to aim for simplicity and easy comprehension for users.
@@ -95,9 +133,6 @@ Both of these do the same thing, they are exactly the same, we should just keep 
 
 8-	Changed the delete inspection icon to actual right **icon: trash**.
 
-
-### Old Features (ignore)
-
 - Views.py is now modified to be class based instead of function based.
 - Edited inspections will update their own date and time and move up to recent inspections in the list.
 - All edited inspections are autonomous in their behaviour, no collision in responses with other inspections in the same parish.
@@ -115,13 +150,3 @@ Both of these do the same thing, they are exactly the same, we should just keep 
 - A return to button in parish and inspection page, to go back to previous page.
 - Signals works to make the questions from the Questions tab in admin link to each inspection (whether it would be to create or edit).
 
-
-### Examples
-
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/home.jpg" width="1000"/>
-
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/register.jpg" width="400"/>
-
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/parish_detail.jpg" width="1000"/>
-
-<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/edit.jpg" width="1000"/>
