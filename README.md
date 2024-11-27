@@ -98,7 +98,9 @@ The Inspection questions tab contains all responses of users for their inspectio
 
 11- Download feature in the reports page uses the same logic (and to take advantage of the alredy built download option in Parish page), so the URL redirect is the same and thus logic is reused.
 
-12- New addition in pdf downloads, the inspection name is also added below the parish name on top of the pdf.
+12- Search engine implemented in the reports page by parish name, it would seem practical for a user to see all reports for a given Parish, instead of trying to search for the reports name which might be tedious due to the long and datetime included name that the report consists of. Also retrieving the reports name to be a searchable parameter was not in the given options with the logic, so for the practical reason and its more time investment approach, it was best considered to implement searching by parish name.
+
+13- New addition in pdf downloads, the inspection name is also added below the parish name on top of the pdf.
 
 ### Examples
 
