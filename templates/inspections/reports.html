@@ -5,7 +5,7 @@
         <h1>Inspection Reports</h1>
 
         <!-- DataTable -->
-        <table id="inspectionReports" class="table table-striped">
+        <table id="inspectionReports" class="table table-striped data">
             <thead>
                 <tr>
                     <th>Parish Name</th>
@@ -22,5 +22,43 @@
     </div>
 
 {% endblock %}
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        $('#inspectionReports').DataTable({
+            "processing": true,
+            "serverSide": true,  // Tell DataTables to expect server-side processing
+            "ajax": {
+                "url": "{% url 'reports_ajax' %}",  // Ensure this is pointing to the correct URL
+                "type": "GET",
+                "data": function (d) {
+                    // Pass additional data if needed (e.g., filters)
+                    d.searchValue = $('#search-input').val();
+                }
+            },
+            "language": {
+                "search": ""  // Removes the "Search:" text entirely
+            },
+            "columns": [
+                { "data": "parish_name" },
+                { "data": "owner" },
+                { "data": "date" },
+                { "data": "name" },
+                { "data": "download", "orderable": false }
+            ],
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[2, 'asc']],
+            "searching": true,
+            "initComplete": function () {
+                // Customize the search input
+                var searchInput = $('#inspectionReports_filter input[type="search"]');
+                searchInput.attr('placeholder', 'Search by Parish...');
+                searchInput.addClass('form-control');
+            }
+        });
+    });
+</script>
+{% endblock %}
+
 
 

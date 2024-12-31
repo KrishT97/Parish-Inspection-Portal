@@ -47,16 +47,16 @@
         <p>&copy; 2024 Parish Inspection Portal</p>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- Load jQuery first -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'js/feather.js' %}"></script>
     <script>
         feather.replace();
       </script>
     {% block extra_js %}{% endblock %}
-    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" defer></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js" defer></script>
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register("{% static 'js/service-worker.js' %}")
@@ -67,40 +67,6 @@
             console.error('Service Worker registration failed:', error);
           });
       }
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#inspectionReports').DataTable({
-                "processing": true,
-                "serverSide": true,  // Tell DataTables to expect server-side processing
-                "ajax": {
-                    "url": "{% url 'reports_ajax' %}",  // Ensure this is pointing to the correct URL
-                    "type": "GET",  // Use GET method for the AJAX call
-                    data: function(d) {
-                        // Pass additional data if needed (e.g., filters)
-                        d.searchValue = $('#search-input').val();  // Example for custom search
-                    }
-                },
-                "language": {
-                    "search": ""  // Removes the "Search:" text entirely
-                },
-                "columns": [
-                    { "data": "parish_name" },
-                    { "data": "owner" },
-                    { "data": "date" },
-                    { "data": "name" },
-                    { "data": "download" , orderable: false}
-                ],
-                "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],  // Pagination options
-                "order": [[3, 'asc']],
-                "searching": true,
-                "initComplete": function() {
-                    var searchInput = $('#inspectionReports_filter input[type="search"]');
-                    searchInput.attr('placeholder', 'Search by Parish...');
-                    searchInput.addClass('form-control');
-                }
-            });
-        });
     </script>
 </body>
 </html>

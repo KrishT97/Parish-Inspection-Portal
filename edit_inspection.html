@@ -1,0 +1,158 @@
+{% extends 'inspections/base.html' %}
+{% load custom_filters %}
+
+{% block title %}Edit {{ inspection }}{% endblock %}
+
+{% block content %}
+<h4>Edit {{ inspection }}</h4>
+<a href="{% url 'parish_detail' inspection.parish.id %}" class="btn btn-secondary back-btn ml-auto" title="Back" >
+    <i data-feather="arrow-left-circle"></i> Back
+</a>
+{% if request.user == inspection.parish.created_by %}
+    <button type="button" class="btn btn-info" id="add-question-btn" style="margin-bottom: 10px;">Add Question</button>
+{% endif %}
+<form method="POST" id="edit-inspection-form">
+    {% csrf_token %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    Questions
+                    <div style="background-color: darkslategray; padding: 10px; border-radius: 2px; display: inline-block; float: right; font-size: 14px">
+                        <span style="color: greenyellow; font-weight: bold;">
+                            (Total questions answered: {{ answered_questions }}/{{ total_questions }})
+                        </span>
+                    </div>
+                </th>
+                <th>Yes</th>
+                <th>No</th>
+                <th>Other</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="questions-table">
+            {% for inspection_question in inspection_questions %}
+            <tr data-question-id="{{ inspection_question.question.id }}">
+                <td>{{ inspection_question.question.question_text }}</td>
+                <td>
+                    <input type="radio"
+                           name="question_{{ inspection_question.question.id }}"
+                           value="yes"
+                           {% if inspection_question.answer == "yes" %}checked{% endif %}>
+                </td>
+                <td>
+                    <input type="radio"
+                           name="question_{{ inspection_question.question.id }}"
+                           value="no"
+                           {% if inspection_question.answer == "no" %}checked{% endif %}>
+                </td>
+                <td>
+                    <input type="radio"
+                           name="question_{{ inspection_question.question.id }}"
+                           value="other"
+                           {% if inspection_question.answer == "other" %}checked{% endif %}>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger remove-question-btn">Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5">
+                    <label for="general_comment">General Comment:</label>
+                    <textarea name="comment_text" rows="3" class="form-control">{{ general_comment }}</textarea>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="pagination">
+        <span class="step-links">
+            {% if inspection_questions.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ inspection_questions.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ inspection_questions.number }} of {{ inspection_questions.paginator.num_pages }}.
+            </span>
+
+            {% if inspection_questions.has_next %}
+                <a href="?page={{ inspection_questions.next_page_number }}">next</a>
+                <a href="?page={{ inspection_questions.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    <input type="hidden" name="removed_questions" id="removed-questions">
+    <input type="hidden" name="edited_questions" id="edited-questions">
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const questionsTable = document.getElementById("questions-table");
+        const removedQuestionsInput = document.getElementById("removed-questions");
+        const editedQuestionsInput = document.getElementById("edited-questions");
+
+        // Initialize hidden inputs as valid JSON
+        if (!removedQuestionsInput.value) removedQuestionsInput.value = "[]";
+        if (!editedQuestionsInput.value) editedQuestionsInput.value = "{}";
+
+        // Add Question
+        document.getElementById("add-question-btn").addEventListener("click", () => {
+            const questionText = prompt("Enter the new question:");
+            if (questionText) {
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `
+                    <td>
+                        <input type="text" name="new_questions[]" value="${questionText}" class="form-control" required>
+                    </td>
+                    <td><input type="radio" disabled></td>
+                    <td><input type="radio" disabled></td>
+                    <td><input type="radio" disabled></td>
+                    <td>
+                        <button type="button" class="btn btn-danger remove-question-btn">Remove</button>
+                    </td>`;
+                questionsTable.appendChild(newRow);
+            }
+        });
+
+        // Remove Question
+        document.addEventListener("click", (e) => {
+            if (e.target && e.target.classList.contains("remove-question-btn")) {
+                const row = e.target.closest("tr");
+                const questionId = row.dataset.questionId;
+
+                if (questionId) {
+                    const removedQuestions = JSON.parse(removedQuestionsInput.value || "[]");
+                    removedQuestions.push(questionId);
+                    removedQuestionsInput.value = JSON.stringify(removedQuestions);
+                }
+
+                row.remove();
+            }
+        });
+        // Edit Question
+        document.addEventListener("click", (e) => {
+            if (e.target && e.target.classList.contains("edit-question-btn")) {
+                const row = e.target.closest("tr");
+                const questionId = row.dataset.questionId;
+                const questionInput = row.querySelector('input[name^="edited_questions"]');
+
+                if (questionInput) {
+                    const newText = prompt("Edit question:", questionInput.value);
+                    if (newText) {
+                        questionInput.value = newText;
+
+                        // Track edited questions in hidden input
+                        const editedQuestions = JSON.parse(editedQuestionsInput.value || "{}");
+                        editedQuestions[questionId] = newText;
+                        editedQuestionsInput.value = JSON.stringify(editedQuestions);
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+
+{% endblock %}
