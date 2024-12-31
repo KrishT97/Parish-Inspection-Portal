@@ -1,4 +1,4 @@
-## Phase 1 Post-Delivery
+## Phase 2 Post-Delivery
 ### Steps to make everything work
 
 1- Import the code in local system with the project directory being parish_inspection, make sure to **load your own virtual env** directory (venv)
@@ -74,7 +74,18 @@ The Inspections tab contains all Inspections created.
 
 The Inspection questions tab contains all responses of users for their inspections.
 
-### Updates
+### New Updates
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/test1.png" width="1000"/>
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/test2.png" width="1000"/>
+
+<img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/test3.png" width="1000"/>
+
+
+
+
+###  Old Updates
 
 1- Search bar implemented in the home screen, as soon as the user types in something, it would show them the list of parishes. Any query matching the Parish would be shown in the dropdown list.
 
