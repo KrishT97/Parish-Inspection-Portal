@@ -23,6 +23,7 @@ body, html {
     align-items: center;       /* Vertically center items */
     gap: 15px;                 /* Adds space between links and the button */
 }
+
 .main-container{
     min-height: 100vh;
 }
@@ -131,9 +132,25 @@ h1:hover::after, h2:hover::after, h3:hover::after {
 .btn-primary:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    background-color: #70513b; /* Gold color */
+    background-color: #70513b;
+}
+/* Bootstrap-Specific Pagination Classes */
+.page-item .page-link {
+    color: #70513b !important;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px; /* Rounded corners */
 }
 
+.page-item.active .page-link {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color);
+    color: #fff !important; /* White text */
+}
+
+.page-item .page-link:hover {
+    background-color: var(--primary-color);
+    color: #fff !important;
+}
 /* Cards with Highlight and Glow */
 .card {
     background: var(--background-light);
@@ -441,5 +458,3 @@ text-align: center;
     background-color: #c0392b;  /* Darker red background on hover */
     transform: translateY(-2px); /* Slight lift effect on hover */
 }
-
-
