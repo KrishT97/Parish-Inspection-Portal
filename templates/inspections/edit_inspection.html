@@ -5,7 +5,7 @@
 
 {% block content %}
 <h4>Edit {{ inspection }}</h4>
-<a href="{% url 'parish_detail' inspection.parish.id %}" class="btn btn-secondary back-btn" title="Back" style="margin-top: 105px; margin-right: 55px; gap: 5px; display: flex;">
+<a href="{% url 'parish_detail' inspection.parish.id %}" class="btn btn-secondary back-btn ml-auto" title="Back" >
     <i data-feather="arrow-left-circle"></i> Back
 </a>
 {% if request.user == inspection.parish.created_by %}

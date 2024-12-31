@@ -4,10 +4,12 @@
 
 {% block content %}
     <div class="card parish-card p-3">
-        <a href="{% url 'home' %}" class="btn btn-secondary back-btn"> <i data-feather="arrow-left-circle"></i>Back</a>
+        <a href="{% url 'home' %}" class="btn btn-secondary back-btn ml-auto"> <i data-feather="arrow-left-circle"></i>Back</a>
         <div class="row">
             <div class="col-sm-3">
-                <figure><img  src="{{ parish.image.url }}" alt="parish-image"></figure>
+                <figure>
+                    <img src="{{ parish.image.url }}" alt="parish-image">
+                </figure>
             </div>
             <div class="col-sm-9">
                 

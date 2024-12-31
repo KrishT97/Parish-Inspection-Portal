@@ -1,173 +1,445 @@
-body {
-    font-family: "Readex Pro" !important;
-    background-color: #f4f4f4;
-}
-
-h1,h2,h3,h4,h5,h6{
-    font-weight: 600;
-}
-/*----Styles by Sohail---*/
+/* -------Krish update------- */
+/* Base Styles */
 :root {
-    --primary-color: #a67b5b; /* Example: dark */
-    --secondary-color: #464646; /* Example: light */
+    --primary-color: #a67b5b; /* Example: dark brown*/
+    --secondary-color: #464646; /* Example: black */
+    --background-light: #ece9e6; /* Example: light brown */
 }
 .top-bar{
     background-color: var(--primary-color) !important;
 }
-.btn-primary:active,
-.btn-primary:focus,
-.btn-primary{
-    background-color: var(--primary-color);
-    border:1px solid var(--primary-color)
+body, html {
+    font-family: "Readex Pro", sans-serif !important;
+    background: linear-gradient(135deg, #ece9e6, #ffffff);
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+    color: #333;
+    transition: background-color 0.3s ease-in-out;
 }
-.btn-primary:hover{
-    background-color: var(--primary-color);
-    opacity: 0.9;
-    border:1px solid var(--primary-color);
-    box-shadow: 0 0 10px #767676;
-}
-.btn-secondary{
-    background-color: var(--secondary-color);
-    border:1px solid var(--secondary-color)
-}
-.btn-secondary:hover{
-    box-shadow: 0 0 10px #767676;
+.nav-container {
+    display: flex;             /* Enables flexbox layout */
+    align-items: center;       /* Vertically center items */
+    gap: 15px;                 /* Adds space between links and the button */
 }
 .main-container{
     min-height: 100vh;
 }
-h3 small{
-    font-size: 12px;
+.card-text{
+    font-weight: normal;
 }
-.card.parish-card,
-.card.inspection-card{
-    background-color: #fcfcfc;
-    position: relative;
+.card-text span{
+    font-weight: normal;
 }
-
-.card figure{
-    width: 100%;
-    text-align: center;
-    margin:0 auto;
-}
-.card figure img{
-    display: inline-block;
-    width: 100%;
-}
-
-.card.parish-card{
-    min-height: 250px;
-}
-.card.parish-card.parish-delete-card,
-.card.parish-card.parish-details-card{
-    min-height: auto !important;
-}
-.card.parish-card .card-text a,
-.card.parish-card .card-title a,
-.text-inspection{
-    color: var(--primary-color);
-}
-.card.parish-card .card-title a:hover{
-    text-decoration: none;
-}
-.back-btn{
-    position: absolute;
-    right: 25px;
-    top:25px;
-    z-index: 10;
+/* Navbar with Shadow and Glow */
+.navbar {
+    background: var(--primary-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 .navbar svg,
 .card svg{
    width: 18px;
    height: 18px;
-   margin: 0 5px 0 0;
 }
-.navbar button.text-white,
-.navbar .text-white{
-    font-size: 14px;
-    border: none;
-    background: none !important;
-    padding: 0;
-    cursor: pointer;
-    outline: none;
-}
-.navbar button.text-white:active,
-.navbar button.text-white:focus{
-    border: none;
-    background: none !important;
-    padding: 0;
-    cursor: pointer;
-}
-.navbar .brand .text-white{
-    margin:0 !important;
-    float: left;
-}
-.navbar .text-white svg{
-    float: left;
-}
-.navbar .text-white:after{
-    content:'|';
-    display: inline-block;
-    margin:0 5px;
-}
-.navbar .text-white:last-child:after{
-    display: none;
-}
-.card span:after{
-    content: '|';
-    display: inline-block;
-    padding:0 10px;
-}
-.login-page{
-    min-height: 100vh;
-	overflow: hidden;
-}
-#login-wrapper{
-	position: relative;
-	display: flex;
-	justify-content: center;
-  	align-items: center;
-  	position: relative;
-  	vertical-align: middle;
-  	height: 100vh;
-	width: 100vw;
-}
-.login-form{
-	display:inline-block;
-	width: 400px;
-	padding: 15px;
-	background: rgba(255, 255, 255, 0.9);
-	border-radius: 5px;
-    border: 1px solid #e7e7e7;
-}
-.login-form input{
-	border-radius:0;
-	height: 46px;
-	box-shadow: none !important;
-	background:none;
-	border-radius: 5px;
-	border: 1px solid #d7d7d7;
-    width: 100%;
-}
-.login-form .btn-primary{
-	padding: 15px 30px;
-    background-color: var(--primary-color);
-	border:none;
-	width: 100%;
-	font-size: 16px;
-	border-radius: 5px;
-}
-.btn-danger:hover,
-.login-form .btn:hover{
-	box-shadow: 0 0 10px #767676;
+.navbar:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
 }
 
+.navbar .text-white {
+    font-size: 16px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.navbar .text-white:hover {
+    color: #ffd700; /* Gold highlight */
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+}
+.color-brown {
+    color: #a67b5b;
+    text-shadow:  0 0 1px rgba(166, 123, 91, 0.5), 0 0 1px rgba(166, 123, 91, 0.2);
+}
+/* Headers with Neon Glow */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: var(--primary-color);
+    text-shadow:  0 0 2px rgba(166, 123, 91, 0.5), 0 0 5px rgba(166, 123, 91, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+h1::after, h2::after, h3::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 3px;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+h1:hover::after, h2:hover::after, h3:hover::after {
+    width: 80%;
+}
+.back-btn{
+    position: relative;
+    margin-right: -10px;
+    width: 100px;
+    float: right;
+    right: 25px;
+    top:25px;
+    z-index: 10;
+}
+
+/* Buttons with Ripple Effect */
+.btn-primary {
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary::before {
+    content: "";
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    top: 50%;
+    left: 50%;
+    background: rgba(112, 81, 59, 0.5);
+    transform: translate(-50%, -50%) scale(0);
+    border-radius: 50%;
+    z-index: -1;
+    transition: transform 0.6s ease-out;
+}
+
+.btn-primary:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    background-color: #70513b; /* Gold color */
+}
+
+/* Cards with Highlight and Glow */
+.card {
+    background: var(--background-light);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.2);
+}
+.login-form {
+    width: 100%;
+}
+/* Form with Animated Placeholders */
+.login-form input {
+    width: 100%;
+    height: 46px;
+    border-radius: 5px;
+    border: 1px solid #d7d7d7;
+    padding: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-size: 16px;
+    position: relative;
+}
+#login-wrapper {
+    width: 100%;
+    max-width: 400px; /* Restrict the form width */
+    padding: 20px; /* Space within the form */
+    background-color: #ffffff; /* Form background */
+    border-radius: 8px; /* Optional: Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Shadow for aesthetics */
+    box-sizing: border-box; /* Ensure padding doesn't affect dimensions */
+}
+#login-page {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    min-height: 100vh; /* Full viewport height */
+    padding: 20px; /* Uniform padding around the content */
+    box-sizing: border-box; /* Include padding in width/height */
+    animation: fadeIn 1.5s ease-in-out;
+}
+.parish-card table .btn svg{
+margin:0;
+}
+.card table span::after{
+display: none;
+}
+.login-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px var(--primary-color);
+    outline: none;
+}
 /* Apply color to even rows */
 .inspections-table tr:nth-child(even) {
     background-color: #e7e7e7; /* light grey */
   }
-  
-  /* Apply color to odd rows */
-  .inspections-table tr:nth-child(odd) {
-    background-color: #f7f7f7; /* white */
-  }
+
+/* Apply color to odd rows */
+.inspections-table tr:nth-child(odd) {
+background-color: #f7f7f7; /* white */
+}
+
+#inspectionReports {
+    display: table !important; /* Ensure it's displayed as a table */
+    width: 100%;
+    border-collapse: collapse;
+}
+#inspectionReports tbody tr {
+    display: table-row !important;
+}
+/* Animations */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.card figure img {
+    width: 200px;       /* Set width to 200px */
+    height: 200px;      /* Set height to 150px */
+    border-radius: 10%;
+    object-fit: cover;  /* Ensures the image covers the set dimensions without distortion */
+}
+
+
+.btn-secondary {
+    background: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Page Transition */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f7f8fc, #e9e9e9);
+    animation: fadeIn 1.5s ease-in-out;
+}
+.back-btn{
+    padding:2px;
+    font-size: 15px;
+    right: 15px;
+    top:15px;
+}
+.parish-card table .btn{
+margin:0 2px 2px 0 !important;
+text-align: center;
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/*---Media Queries-----*/
+@media(max-width:1200px){
+    .card span{
+        font-size: 12px;
+    }
+}
+@media(min-width:768px) and (max-width:991px){
+    .card-column{
+        max-width: 100%;
+        flex: 0 0 100%;
+
+    }
+    .card span{
+        font-size: 14px;
+    }
+    .parish-card .col-sm-3,
+    .parish-card .col-sm-9{
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+}
+@media(max-width:767px){
+    .page-title{
+        font-size: 2rem;
+    }
+    h3{
+        font-size: 1.5rem;
+    }
+    .text-muted{
+        font-size: 12px;
+    }
+    .card-column{
+        max-width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .card.parish-card{
+        min-height: auto !important;
+        min-width: auto !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+    .card .card-text span::after {
+        content: "|";
+    }
+    .card span:after{
+        padding:0 5px;
+    }
+    .parish-card form .col-sm-8,
+    .parish-card form .col-sm-4,
+    .parish-card .col-sm-3,
+    .parish-card .col-sm-9{
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    .parish-card form h2{
+        text-align: center;
+    }
+    .parish-card form .col-sm-6{
+        max-width: 50%;
+        flex: 0 0 50%;
+    }
+    .parish-card table .btn{
+       margin:0 2px 2px 0 !important;
+       width: 30px;
+       height: 30px;
+       padding: 0;
+       line-height: 30px;
+       text-align: center;
+       float: left;
+    }
+    .parish-card table .btn-primary span{
+        display: none;
+    }
+    .parish-card table .btn svg{
+        width: 15px;
+        height: 15px;
+        margin:0;
+        overflow: hidden;
+    }
+    .parish-details-card h3{
+        font-size: 1.6rem;
+    }
+    .parish-details-card .btn-primary{
+        float: right;
+        padding:5px;
+        font-size: 12px;
+        margin:10px 0 0 0;
+    }
+    .parish-details-card .btn-primary svg{
+        width: 12px;
+        height: 12px;
+    }
+
+}
+@media(max-width:580px){
+    .available-parish-bar,
+    h5.text-right{
+        text-align: center !important;
+    }
+    .parish-card table .btn{
+        width: 100%;
+    }
+    .parish-card h2{
+        text-align: center;
+    }
+}
+@media(max-width:420px){
+    .navbar .brand,
+    .navbar .ml-auto a{
+        font-size: 14px;
+        float: none !important;
+    }
+    .navbar .brand .text-white,
+    .navbar .text-white svg{
+        float: none;
+    }
+    .navbar .brand,
+    .navbar .ml-auto{
+        display:block !important;
+        width: 90%;
+        margin:0 auto 10px auto !important;
+        text-align: center;
+    }
+    .available-parish-bar,
+    h5.text-right{
+        text-align: center !important;
+    }
+    .navbar .ml-auto{
+        margin:0 auto !important
+    }
+    .parish-details-card .btn-primary{
+        float: right;
+    }
+    .parish-card table .btn{
+        width: 100%;
+    }
+    .back-btn{
+        padding:5px;
+        font-size: 14px;
+        right: 15px;
+        top:15px;
+
+    }
+}
+
+/* Button styling */
+.logout-btn {
+    background-color: #70513b;  /* Red background */
+    color: white;               /* White text color */
+    border: none;               /* Remove default border */
+    border-radius: 3px;         /* Rounded corners */
+    padding: 8px 15px;          /* Padding inside the button */
+    font-size: 14px;            /* Font size */
+    cursor: pointer;           /* Pointer cursor on hover */
+    display: flex;
+    align-items: center;        /* Align icon and text vertically */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+.logout-btn i {
+    margin-right: 5px;          /* Space between icon and text */
+}
+
+/* Button hover effect */
+.logout-btn:hover {
+    background-color: #c0392b;  /* Darker red background on hover */
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+
