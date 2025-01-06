@@ -48,8 +48,22 @@
                 {% endif %}
             </span>
         </div>
-        <h4>General Comment</h4>
+        <div style="margin-top: 10px;">
+            <h4>General Comment </h4>
+        </div>
         <p>{{ comment.comment_text }}</p>
+        <h4>Uploaded Images (Max 5)</h4>
+        <div id="image-preview" style="margin-top: 10px;">
+            {% if inspection_images %}
+                {% for image in inspection_images %}
+                    <div class="image-container" style="display: inline-block; margin-right: 10px;">
+                        <img src="{{ image.image.url }}" alt="Uploaded Image" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;">
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No images uploaded for this inspection.</p>
+            {% endif %}
+        </div>
     </div>
     
 

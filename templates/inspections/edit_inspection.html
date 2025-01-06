@@ -11,7 +11,7 @@
 {% if request.user == inspection.parish.created_by %}
     <button type="button" class="btn btn-info" id="add-question-btn" style="margin-bottom: 10px;">Add Question</button>
 {% endif %}
-<form method="POST" id="edit-inspection-form">
+<form method="POST" id="edit-inspection-form" enctype="multipart/form-data">
     {% csrf_token %}
     <table class="table table-bordered">
         <thead>
@@ -59,8 +59,25 @@
             {% endfor %}
             <tr>
                 <td colspan="5">
-                    <label for="general_comment">General Comment:</label>
+                    <label for="general_comment"><b>General Comment:</b></label>
                     <textarea name="comment_text" rows="3" class="form-control">{{ general_comment }}</textarea>
+                    <div style="margin-top: 10px">
+                        <label for="uploaded_images"><b>Upload image/s (Max 5):</b></label>
+                    </div>
+                    <div>
+                        <input type="file" id="uploaded-images" name="uploaded_images" multiple>
+                        <p id="image-upload-error" style="color: red; display: none;">You can upload a maximum of 5 images.</p>
+                    </div>
+                    <div id="image-preview" style="position: relative; margin-top: 10px;">
+                        <button type="button" id="delete-first-image-btn" class="delete-btn" style="display: none;">&times;</button>
+                        {% for image in inspection_images %}
+                            <div class="image-container" style="display: inline-block; margin-right: 10px;">
+                                <img src="{{ image.image.url }}" alt="Uploaded Image" style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ddd;">
+                                <input type="hidden" name="existing_images[]" value="{{ image.id }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="deleted_images" id="deleted-images" value="[]">
                 </td>
             </tr>
         </tbody>
@@ -84,9 +101,8 @@
     </div>
     <input type="hidden" name="removed_questions" id="removed-questions">
     <input type="hidden" name="edited_questions" id="edited-questions">
-    <button type="submit" class="btn btn-primary">Update</button>
+    <button type="submit" class="btn btn-primary" style="margin-bottom: 50px">Update</button>
 </form>
-
 <script>
     document.addEventListener("DOMContentLoaded", () => {
         const questionsTable = document.getElementById("questions-table");
@@ -151,6 +167,88 @@
                 }
             }
         });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const deleteButton = document.getElementById("delete-first-image-btn");
+        const fileInput = document.getElementById('uploaded-images');
+        const errorElement = document.getElementById('image-upload-error');
+        const imagePreview = document.getElementById("image-preview");
+
+        fileInput.addEventListener('change', (event) => {
+            const files = event.target.files;
+
+            // Clear previous error message and previews
+            errorElement.style.display = 'none';
+            imagePreview.innerHTML = "";
+
+            if (files.length > 5) {
+                // Show error message
+                errorElement.textContent = "You can upload a maximum of 5 images.";
+                errorElement.style.display = 'block';
+
+                // Reset the file input to prevent the invalid submission
+                fileInput.value = "";
+            } else {
+                // Show previews for valid files
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = "100px";
+                        img.style.height = "100px";
+                        img.style.objectFit = "cover";
+                        img.style.marginRight = "10px";
+                        imagePreview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+        // Function to update the visibility of the delete button
+        const updateDeleteButtonVisibility = () => {
+            const imageContainers = imagePreview.querySelectorAll('.image-container');
+            if (imageContainers.length === 0) {
+                deleteButton.style.display = "none"; // Hide if no images
+            } else {
+                deleteButton.style.display = "inline-block"; // Show if images exist
+            }
+        };
+
+        // Initialize visibility on page load
+        updateDeleteButtonVisibility();
+
+        // Add event listener to the delete button
+        deleteButton.addEventListener("click", () => {
+            const imageContainers = imagePreview.querySelectorAll('.image-container');
+            if (imageContainers.length > 0) {
+                // Remove the first image container
+                const firstImageContainer = imageContainers[0];
+                const imageId = firstImageContainer.querySelector("input[type='hidden']").value;
+
+                // Update the deleted images list
+                const deletedImagesInput = document.getElementById("deleted-images");
+                let deletedImages = JSON.parse(deletedImagesInput.value || "[]");
+                deletedImages.push(imageId);
+                deletedImagesInput.value = JSON.stringify(deletedImages);
+
+                // Remove the first image container from the DOM
+                firstImageContainer.remove();
+
+                // Update the delete button visibility
+                updateDeleteButtonVisibility();
+            }
+        });
+
+        // Optional: Monitor changes to the image-preview dynamically
+        const observer = new MutationObserver(() => {
+            updateDeleteButtonVisibility();
+        });
+
+        // Observe the image-preview container for changes
+        observer.observe(imagePreview, { childList: true });
     });
 </script>
 

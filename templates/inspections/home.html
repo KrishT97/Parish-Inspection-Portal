@@ -26,56 +26,62 @@
         </ul>
     </div>
     <hr class="mt-1">
-    <div class="row">
-        {% for parish in parishes %}
-        <div class="col-sm-6 card-column mb-4">
-            <div class="card parish-card p-3 mb-3 d-flex flex-column h-100">
-                <div class="row g-3">
-                    <div class="col-sm-5">
-                        <figure>
-                            <a href="{% url 'home' %}" class="text-white">
-                                <img class="card-img-top" src="{{ parish.image.url }}" alt="Parish Image">
-                            </a>
-                        </figure>
-                    </div>
-                    <div class="col-sm-7">
-                        <div class="card-body p-0">
-                            <h5 class="card-title"><a href="{% url 'parish_detail' parish.id %}" class="color-brown">{{ parish.name }}</a></h5>
-                            <hr>
-                            <p class="card-text">{{ parish.description }}</p>
-                            <p> <a href="{% url 'parish_detail' parish.id %}" class="btn btn-primary col pt-2 pb-2"><i data-feather="eye"></i>View Parish</a></p>
+    <div class="container">
+        <div class="row">
+            {% for parish in parishes %}
+            <div class="col-md-6 mb-4">
+                <div class="card parish-card p-3 d-flex flex-column h-100">
+                    <div class="row g-3">
+                        <div class="col-sm-5">
+                            <figure>
+                                <a href="{% url 'home' %}" class="text-white">
+                                    <img class="card-img-top" src="{{ parish.image.url }}" alt="Parish Image">
+                                </a>
+                            </figure>
+                        </div>
+                        <div class="col-sm-7">
+                            <div class="card-body p-0">
+                                <h5 class="card-title">
+                                    <a href="{% url 'parish_detail' parish.id %}" class="color-brown">{{ parish.name }}</a>
+                                </h5>
+                                <hr>
+                                <p class="card-text">{{ parish.description }}</p>
+                                <p>
+                                    <a href="{% url 'parish_detail' parish.id %}" class="btn btn-primary col pt-2 pb-2">
+                                        <i data-feather="eye"></i>View Parish
+                                    </a>
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% if forloop.counter|divisibleby:2 %}
-                    <div class="w-100 clearfix"></div>
-                {% endif %}
-                <p class="card-text mt-3">
-                    <span><i data-feather="map-pin"></i>{{ parish.location }}</span>
-                    <span><i data-feather="user"></i>{{ parish.contact }}</span>
-                    <span><i data-feather="phone"></i>{{ parish.phone_number }}</span>
+                    <p class="card-text mt-3">
+                        <span><i data-feather="map-pin"></i>{{ parish.location }}</span>
+                        <span><i data-feather="user"></i>{{ parish.contact }}</span>
+                        <span><i data-feather="phone"></i>{{ parish.phone_number }}</span>
 
-                    {% with parish.inspections.all|dictsortreversed:"updated_at" as sorted_inspections %}
-                        {% with sorted_inspections|slice:":5" as recent_inspections %}
-                            {% for inspection in recent_inspections %}
-                                <strong><i data-feather="check-square"></i>
-                                <a href="{% url 'inspection_detail' parish.id inspection.id %}" class="color-brown">
-                                    {{ forloop.counter }} <!-- Display numbered shortcuts -->
-                                </a>
-                                {% if not forloop.last %}|{% endif %}
-                            {% endfor %}
+                        {% with parish.inspections.all|dictsortreversed:"updated_at" as sorted_inspections %}
+                            {% with sorted_inspections|slice:":5" as recent_inspections %}
+                                {% for inspection in recent_inspections %}
+                                    <strong><i data-feather="check-square"></i>
+                                    <a href="{% url 'inspection_detail' parish.id inspection.id %}" class="color-brown">
+                                        {{ forloop.counter }} <!-- Display numbered shortcuts -->
+                                    </a>
+                                    {% if not forloop.last %}|{% endif %}
+                                {% endfor %}
+                            {% endwith %}
                         {% endwith %}
-                    {% endwith %}
-                    </strong>
-               
-                </p>
+                    </p>
+                </div>
             </div>
-        </div>
-        {% empty %}
-            <p>No parishes available.</p>
-        {% endfor %}
-    </div>
 
+            {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                </div><div class="row">
+            {% endif %}
+            {% empty %}
+                <p>No parishes available.</p>
+            {% endfor %}
+        </div> <!-- Close the last row -->
+    </div>
     <!-- Pagination -->
     <div class="mt-4">
         {% if is_paginated %}

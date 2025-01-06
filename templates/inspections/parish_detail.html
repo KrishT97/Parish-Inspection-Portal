@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="card parish-card p-3">
-        <a href="{% url 'home' %}" class="btn btn-secondary back-btn ml-auto"> <i data-feather="arrow-left-circle"></i>Back</a>
+        <a href="{% url 'home' %}" class="btn btn-secondary back-btn ml-auto" style="margin-bottom: 20px"> <i data-feather="arrow-left-circle"></i>Back</a>
         <div class="row">
             <div class="col-sm-3">
                 <figure>
@@ -59,6 +59,23 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if inspections.has_previous %}
+                            <a class="color-brown" href="?page=1">&laquo; first</a>
+                            <a class="color-brown" href="?page={{ inspections.previous_page_number }}">previous</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Page {{ inspections.number }} of {{ inspections.paginator.num_pages }}.
+                        </span>
+
+                        {% if inspections.has_next %}
+                            <a class="color-brown" href="?page={{ inspections.next_page_number }}">next</a>
+                            <a class="color-brown" href="?page={{ inspections.paginator.num_pages }}">last &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
             </div>
         </div>
         

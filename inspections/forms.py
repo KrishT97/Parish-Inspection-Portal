@@ -1,5 +1,7 @@
 from django import forms
-from .models import Question, Parish, Inspection, GeneralComment, InspectionQuestion
+from django.core.exceptions import ValidationError
+
+from .models import Question, Parish, Inspection, GeneralComment, InspectionQuestion, InspectionImage
 
 
 class ParishForm(forms.ModelForm):
@@ -24,6 +26,11 @@ class InspectionForm(forms.ModelForm):
         required=False,
         widget=forms.Textarea(attrs={'rows': 3}),
         label="General Comment"
+    )
+    uploaded_images = forms.FileField(
+        required=False,
+        widget=forms.ClearableFileInput(attrs={'allow_multiple_selected': True}),
+        label="Upload Images"
     )
 
     def __init__(self, *args, **kwargs):
@@ -68,6 +75,31 @@ class InspectionForm(forms.ModelForm):
 
         # Ensure the `comment_text` field is ordered last
         self.order_fields(field_order=[field for field in self.fields if field != 'comment_text'] + ['comment_text'])
+
+    def clean_uploaded_images(self):
+        """Validate that no more than 5 images are uploaded."""
+        images = self.files.getlist('uploaded_images')
+        if len(images) > 5:
+            raise ValidationError("You can only upload up to 5 images.")
+        return images
+
+    def save(self, commit=True):
+        """Handle saving of images and general comment."""
+        inspection = super().save(commit=commit)
+        general_comment_text = self.cleaned_data.get('comment_text', "")
+        uploaded_images = self.cleaned_data.get('uploaded_images', [])
+
+        # CODE FOR FUTURE REFERENCES
+        # Save the general comment
+        # general_comment, _ = GeneralComment.objects.get_or_create(inspection=inspection)
+        # general_comment.comment_text = general_comment_text
+        # general_comment.save()
+        # print(uploaded_images)
+        # for upload_image in uploaded_images:
+        #     InspectionImage.objects.create(inspection=inspection, image=upload_image).save()
+
+        return inspection
+
 
 class InspectionQuestionForm(forms.ModelForm):
     class Meta:

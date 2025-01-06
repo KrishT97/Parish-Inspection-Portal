@@ -31,6 +31,19 @@ class Inspection(models.Model):
         return f"Inspection for {self.parish.name} on {self.created_at}"
 
 
+class InspectionImage(models.Model):
+    inspection = models.ForeignKey(
+        'Inspection',
+        on_delete=models.CASCADE,
+        related_name='images'
+    )
+    image = models.ImageField(upload_to='inspection_images/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Image for Inspection ID {self.inspection.id}"
+
+
 class Question(models.Model):
     question_text = models.TextField()
     is_default = models.BooleanField(default=False)

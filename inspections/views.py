@@ -14,7 +14,7 @@ from django.db.models import Q
 from xhtml2pdf import pisa
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
-from .models import Parish, Inspection, Question, GeneralComment, InspectionQuestion
+from .models import Parish, Inspection, Question, GeneralComment, InspectionQuestion, InspectionImage
 from .forms import ParishForm, InspectionForm
 from django.utils import timezone
 from django.core.paginator import Paginator
@@ -69,8 +69,13 @@ class ParishDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         parish = self.get_object()
+        inspections = Inspection.objects.filter(parish=parish).order_by('-updated_at')
+        # Set up pagination
+        paginator = Paginator(inspections, 7)  # Show 7 questions per page
+        page_number = self.request.GET.get('page')  # Get the page number from the URL
+        inspections_page = paginator.get_page(page_number)  # Get the relevant page of questions
         # Fetch all inspections ordered by the most recent update
-        context['inspections'] = self.object.inspections.all().order_by('-updated_at')
+        context['inspections'] = inspections_page
         context['num_inspections'] = self.object.inspections.count()
         context['is_creator'] = self.request.user.is_authenticated and parish.created_by == self.request.user
         return context
@@ -103,6 +108,11 @@ class InspectionCreateView(LoginRequiredMixin, CreateView):
         if comment_text:
             GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
 
+        # Handle image uploads
+        uploaded_images = self.request.FILES.getlist('uploaded_images')
+        for image in uploaded_images[:5]:
+            InspectionImage.objects.create(inspection=inspection, image=image)
+
         return redirect('parish_detail', parish_id=parish.id)
 
 
@@ -126,6 +136,8 @@ class InspectionDetailView(DetailView):
         # Add paginated questions and comments to the context
         context['inspection_questions'] = questions_page  # Use the paginated questions
         context['comment'] = GeneralComment.objects.filter(inspection=inspection).first()
+        context['inspection_images'] = InspectionImage.objects.filter(inspection=inspection).order_by('-uploaded_at')[
+                                       :5]
 
         # def get_context_data(self, **kwargs):
         #     context = super().get_context_data(**kwargs)
@@ -169,6 +181,9 @@ class InspectionEditView(LoginRequiredMixin, UpdateView):
 
         context['total_questions'] = total_questions
         context['answered_questions'] = answered_questions
+        # Update the context to fetch only the most recent 5 images
+        context['inspection_images'] = InspectionImage.objects.filter(inspection=inspection).order_by('-uploaded_at')[
+                                       :5]
 
         return context
 
@@ -230,6 +245,28 @@ class InspectionEditView(LoginRequiredMixin, UpdateView):
                 GeneralComment.objects.create(inspection=inspection, comment_text=comment_text)
         elif general_comment:
             general_comment.delete()
+
+        # Handle uploaded images
+        uploaded_images = self.request.FILES.getlist('uploaded_images')
+        if uploaded_images:
+            # Delete all existing images for the inspection
+            InspectionImage.objects.filter(inspection=inspection).delete()
+
+            # Save only the latest 5 uploaded images
+            for image in uploaded_images[:5]:
+                InspectionImage.objects.create(inspection=inspection, image=image)
+        if not uploaded_images:
+            InspectionImage.objects.filter(inspection=inspection).delete()
+
+        # Handle deleted images
+        deleted_image_ids = self.request.POST.get('deleted_images', '[]')
+        deleted_image_ids = json.loads(deleted_image_ids)
+        for image_id in deleted_image_ids:
+            try:
+                image = InspectionImage.objects.get(id=image_id, inspection=inspection)
+                image.delete()
+            except InspectionImage.DoesNotExist:
+                continue
 
         return redirect('parish_detail', parish_id=inspection.parish.id)
 
