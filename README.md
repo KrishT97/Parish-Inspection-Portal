@@ -1,4 +1,64 @@
-## Phase 3 Post-Delivery
+# Parish Inspection Portal
+## Overview
+
+**Parish Inspection Portal** is a web application designed to streamline and digitize the inspection process for parish facilities. Built with Django, this portal enables parish council clerks to manage inspections for multiple parishes through a user-friendly interface. The system supports dynamic inspection checklists, image uploads for general comments, report generation, and more, all while providing secure user authentication and responsive design.
+
+## Features v3
+
+- **User Registration & Authentication:** Secure login and registration to manage access.
+- **Parish Management:** Create, edit, and delete parish profiles with details such as name, description, location, contact, phone number, and profile picture.
+- **Inspection Management:** Create and update inspections with dynamic checklists, general comments, and the ability to upload up to 5 images per inspection.
+- **Inspection Reports:** Generate, view, and download detailed inspection reports. Reports are searchable and sortable through an integrated data table.
+- **Responsive & Modern UI:** Sleek design with animations, drop shadows, and progressive web app (PWA) enhancements for offline support and home screen installation.
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.x  
+- Django 5.x (or later)  
+- Virtual environment tool (e.g., `venv` or `virtualenv`)  
+- A database (SQLite is used by default)
+  
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/parish-inspection-portal.git
+   cd parish-inspection-portal
+   ```
+2. **Create and activate a virtual environment:**
+
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+3. **Install dependencies:**
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+    
+4. **Apply migrations:**
+
+    ```bash
+    python manage.py migrate
+    ```
+
+5. **Create a superuser:**
+
+    ```bash
+    python manage.py createsuperuser
+    ```
+
+6. **Run the development server:**
+
+    ```bash
+    python manage.py runserver
+    ```
+    
+Access the application: Open your browser and navigate to http://127.0.0.1:8000/
+
 ### Steps to make everything work
 
 1- Import the code in local system with the project directory being parish_inspection, make sure to **load your own virtual env** directory (venv)
@@ -7,7 +67,7 @@
     
     python manage.py shell
 
-3- Inside the shell run:
+3- Inside the shell run the default questions usually presented in Uk parishes:
 
     from inspections.models import Question
   
@@ -65,7 +125,8 @@
 
      python manage.py runserver 
 
-     
+### Notes
+
 The Questions tab in admin will show all the default 34 questions, that can be modified by the admin and the changes will propagate throughout the site. 
 
 The Parishs tab contains all Parishs created.
@@ -79,7 +140,9 @@ The Inspection questions tab contains all responses of users for their inspectio
 Various UI improvements, bug fixing and image upload feature on inspections.
 
 
-###  Old Updates
+###  Old Updates v2
+
+#### Notes
 
 <img src="https://github.com/KrishT97/parish_inspection/blob/main/extras/test1.png" width="1000"/>
 
@@ -127,7 +190,10 @@ History table, would need more time to look into it and its implementation.
 
 
 
-### Old Updates
+### Even Older Updates v1
+
+#### Notes
+
 1-	Questions was wrong formatted to start with, having more than 34 questions already preloaded and with an unintended question, making it seem as if there is a ‘data bug’. Solution is to **remove all questions from the admin panel** and add them though shell again (34) checking the validity in the Questions tab.
 
 2-	The inspection view page is ok, **added a feather.js slash symbol for ‘other’**, would be ideal to have a symbol for other as well and not just blank. However, on a general note the symbols could be confusing for new users or those who are not familiar with the site, instead of a tick symbol or cross for ‘yes’ or ‘no’ respectively, we could just add the text in itself (‘yes’, ‘no’, ‘other’). Sometimes making the site more aesthetically pleasing could lead to worse user experience, we should try to aim for simplicity and easy comprehension for users.
