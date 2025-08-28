@@ -4,7 +4,9 @@
 ![](https://raw.githubusercontent.com/krisht97/Parish-Inspection-Portal/main/extras/parish-demo-video.gif)
 
 
-**Parish Inspection Portal** is a web application designed to streamline and digitize the inspection process for parish facilities. Built with Django, this portal enables parish council clerks to manage inspections for multiple parishes through a user-friendly interface. The system supports dynamic inspection checklists, image uploads for general comments, report generation, and more, all while providing secure user authentication and responsive design.
+**Parish Inspection Portal** is a web application (PoC startup project) designed to streamline and digitize the inspection process for parish facilities. Built with Django, this portal enables parish council clerks to manage inspections for multiple parishes through a user-friendly interface. The system supports dynamic inspection checklists, image uploads for general comments, report generation, and more, all while providing secure user authentication and responsive design.
+
+Current version was finalized for demo purposes for parish client in UK, small team members participated in making this idea a reality.
 
 ## Features v3
 
